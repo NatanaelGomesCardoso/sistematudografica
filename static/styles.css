@@ -34,3 +34,91 @@
     background: #eee;
     margin-top: 4rem;
 }
+
+form div {
+    margin-bottom: 1rem;
+}
+
+input,
+select {
+    padding: 0.4rem;
+    width: 100%;
+    max-width: 400px;
+    font-size: 1rem;
+}
+
+button {
+    padding: 0.6rem 1.2rem;
+    background: #005f99;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    border-radius: 4px;
+}
+
+button:hover {
+    background: #004f88;
+}
+
+form {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.08);
+    margin-bottom: 2rem;
+    max-width: 700px;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+input,
+select {
+    padding: 0.6rem;
+    width: 100%;
+    max-width: 500px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1rem;
+}
+
+button {
+    padding: 0.6rem 1.4rem;
+    background: #005f99;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-top: 1rem;
+}
+
+button:hover {
+    background: #004a78;
+}
+
+.radio-group {
+    display: flex;
+    gap: 1rem;
+    margin-top: 0.5rem;
+}
+
+.clientes-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+.clientes-table th,
+.clientes-table td {
+    border: 1px solid #ccc;
+    padding: 0.5rem;
+    text-align: left;
+}
+
+.clientes-table th {
+    background: #005f99;
+    color: white;
+}

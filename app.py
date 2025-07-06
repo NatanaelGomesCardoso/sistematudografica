@@ -19,13 +19,31 @@ db = SQLAlchemy(app)
 
 class Cliente(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    nome = db.Column(db.String(100), nullable=False)
-    email = db.Column(db.String(120), unique=True)
-    telefone = db.Column(db.String(20))
+    tipo = db.Column(db.String(10))  # 'cpf' ou 'cnpj'
+
+    # Pessoa Física
+    nome = db.Column(db.String(100))
+    cpf = db.Column(db.String(20))
+    email = db.Column(db.String(120))
+
+    # Pessoa Jurídica
+    razao_social = db.Column(db.String(100))
+    nome_fantasia = db.Column(db.String(100))
+    cnpj = db.Column(db.String(20))
+    responsavel = db.Column(db.String(100))
+    telefone_empresa = db.Column(db.String(30))
+    email_cnpj = db.Column(db.String(120))
+    endereco_empresa = db.Column(db.String(255))
+    endereco_entrega = db.Column(db.String(255))
+
+    # Comum
+    telefone = db.Column(db.String(30))
     como_conheceu = db.Column(db.String(100))
+    como_conheceu_outros = db.Column(db.String(100))
 
     def __repr__(self):
-        return f'<Cliente {self.nome}>'
+        return f'<Cliente {self.nome or self.razao_social}>'
+
 
 # === 3. Contexto para mostrar a data atual nos templates ===
 
@@ -49,19 +67,41 @@ def cadastro_clientes():
     clientes = Cliente.query.all()
     return render_template('cadastro_clientes.html', clientes=clientes)
 
-# 👉 POST: salvar novo cliente
+
 @app.route('/clientes', methods=['POST'])
 def cadastro_clientes_post():
-    nome = request.form['nome']
-    email = request.form['email']
-    telefone = request.form['telefone']
-    como = request.form['como_conheceu']
+    tipo = request.form['tipo']
 
-    novo = Cliente(nome=nome, email=email, telefone=telefone, como_conheceu=como)
-    db.session.add(novo)
+    if tipo == 'cpf':
+        cliente = Cliente(
+            tipo='cpf',
+            nome=request.form['nome'],
+            cpf=request.form['cpf'],
+            email=request.form['email'],
+            telefone=request.form['telefone'],
+            como_conheceu=request.form['como_conheceu'],
+            como_conheceu_outros=request.form.get('como_conheceu_outros', '')
+        )
+    else:
+        cliente = Cliente(
+            tipo='cnpj',
+            razao_social=request.form['razao_social'],
+            nome_fantasia=request.form['nome_fantasia'],
+            cnpj=request.form['cnpj'],
+            responsavel=request.form['responsavel'],
+            telefone_empresa=request.form['telefone_empresa'],
+            email_cnpj=request.form['email_cnpj'],
+            endereco_empresa=request.form['endereco_empresa'],
+            endereco_entrega=request.form['endereco_entrega'],
+            telefone=request.form['telefone'],
+            como_conheceu=request.form['como_conheceu'],
+            como_conheceu_outros=request.form.get('como_conheceu_outros', '')
+        )
+
+    db.session.add(cliente)
     db.session.commit()
-
     return redirect(url_for('cadastro_clientes'))
+
 
 @app.route('/os')
 def os_listar():
