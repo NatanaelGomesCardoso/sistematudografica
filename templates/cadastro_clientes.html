@@ -179,22 +179,28 @@
         return calc(t) === d1 && calc(t + 1) === d2;
     }
 
-    // Bloqueia envio se CPF/CNPJ inválido
+    // Bloqueia envio se CPF/CNPJ for inválido (mas permite se estiver em branco)
     $('#formCliente').on('submit', function (e) {
         const tipo = $('input[name=tipo]:checked').val();
+
         if (tipo === 'cpf') {
-            const cpf = $('#cpf').val();
-            if (!validarCPF(cpf)) {
-                alert('CPF inválido!');
-                e.preventDefault();
+            const cpfInput = $('#cpf');
+            const cpf = cpfInput.val();
+            // Só valida se o campo não estiver vazio
+            if (cpf && !validarCPF(cpf)) {
+                alert('CPF inválido! Por favor, verifique o número digitado.');
+                e.preventDefault(); // Impede o envio do formulário
             }
-        } else {
-            const cnpj = $('#cnpj').val();
-            if (!validarCNPJ(cnpj)) {
-                alert('CNPJ inválido!');
-                e.preventDefault();
+        } else { // tipo === 'cnpj'
+            const cnpjInput = $('#cnpj');
+            const cnpj = cnpjInput.val();
+            // Só valida se o campo não estiver vazio
+            if (cnpj && !validarCNPJ(cnpj)) {
+                alert('CNPJ inválido! Por favor, verifique o número digitado.');
+                e.preventDefault(); // Impede o envio do formulário
             }
         }
     });
+
 </script>
 {% endblock %}
