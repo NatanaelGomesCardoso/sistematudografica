@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block title %}Cadastro de Clientes — Tudo Gráfica{% endblock %}
+
+{% block content %}
+<h2>Cadastro de Cliente</h2>
+
+<form action="{{ url_for('cadastro_clientes_post') }}" method="post">
+    <div>
+        <label>Nome completo:</label><br>
+        <input type="text" name="nome" required>
+    </div>
+    <div>
+        <label>E‑mail:</label><br>
+        <input type="email" name="email">
+    </div>
+    <div>
+        <label>Telefone:</label><br>
+        <input type="text" name="telefone">
+    </div>
+    <div>
+        <label>Como conheceu a empresa?</label><br>
+        <input type="text" name="como_conheceu">
+    </div>
+    <br>
+    <button type="submit">Salvar Cliente</button>
+</form>
+
+<hr>
+
+<h3>Clientes cadastrados</h3>
+
+<table border="1" cellpadding="8">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nome</th>
+            <th>E-mail</th>
+            <th>Telefone</th>
+            <th>Como conheceu</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for cliente in clientes %}
+        <tr>
+            <td>{{ cliente.id }}</td>
+            <td>{{ cliente.nome }}</td>
+            <td>{{ cliente.email }}</td>
+            <td>{{ cliente.telefone }}</td>
+            <td>{{ cliente.como_conheceu }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
