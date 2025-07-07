@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -8,7 +7,6 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
-
 <body class="sidebar-collapsed">
 
     <aside class="sidebar">
@@ -21,7 +19,7 @@
                 <i class="fa-solid fa-house"></i>
                 <span class="nav-text">Início</span>
             </a>
-
+            
             <div class="nav-module">
                 <div class="module-header">
                     <i class="fa-solid fa-users"></i>
@@ -29,48 +27,58 @@
                     <i class="fa-solid fa-chevron-down arrow"></i>
                 </div>
                 <div class="sub-menu">
-                    <a href="{{ url_for('cadastro_clientes') }}" class="nav-link">
-                        <i class="fa-solid fa-user-plus"></i>
-                        <span class="nav-text">Cadastrar</span>
-                    </a>
-                    <a href="{{ url_for('pesquisar_clientes') }}" class="nav-link">
-                        <i class="fa-solid fa-search"></i>
-                        <span class="nav-text">Pesquisar</span>
-                    </a>
+                    <a href="{{ url_for('cadastro_clientes') }}" class="nav-link"><i class="fa-solid fa-user-plus"></i><span class="nav-text">Cadastrar</span></a>
+                    <a href="{{ url_for('pesquisar_clientes') }}" class="nav-link"><i class="fa-solid fa-search"></i><span class="nav-text">Pesquisar</span></a>
                 </div>
             </div>
 
-            <a href="{{ url_for('cadastro_produtos') }}" class="nav-link">
-                <i class="fa-solid fa-box-open"></i>
-                <span class="nav-text">Produtos</span>
-            </a>
-            <a href="{{ url_for('os_listar') }}" class="nav-link">
-                <i class="fa-solid fa-file-invoice"></i>
-                <span class="nav-text">Ordens de Serviço</span>
+            <div class="nav-module">
+                <div class="module-header">
+                    <i class="fa-solid fa-box-open"></i>
+                    <span class="nav-text">Produtos</span>
+                    <i class="fa-solid fa-chevron-down arrow"></i>
+                </div>
+                <div class="sub-menu">
+                    <a href="{{ url_for('cadastro_produto') }}" class="nav-link"><i class="fa-solid fa-plus-circle"></i><span class="nav-text">Cadastrar</span></a>
+                    <a href="{{ url_for('consultar_produto') }}" class="nav-link"><i class="fa-solid fa-list-alt"></i><span class="nav-text">Consultar</span></a>
+                </div>
+            </div>
+
+            <div class="nav-module">
+                <div class="module-header">
+                    <i class="fa-solid fa-dollar-sign"></i>
+                    <span class="nav-text">Vendas</span>
+                    <i class="fa-solid fa-chevron-down arrow"></i>
+                </div>
+                <div class="sub-menu">
+                    <a href="{{ url_for('novo_orcamento') }}" class="nav-link"><i class="fa-solid fa-file-invoice"></i><span class="nav-text">Novo Orçamento</span></a>
+                    <a href="{{ url_for('nova_os') }}" class="nav-link"><i class="fa-solid fa-file-signature"></i><span class="nav-text">Nova O.S.</span></a>
+                    <a href="{{ url_for('consultar_orcamento') }}" class="nav-link"><i class="fa-solid fa-search-dollar"></i><span class="nav-text">Consultar Orçamentos</span></a>
+                    <a href="{{ url_for('consultar_os') }}" class="nav-link"><i class="fa-solid fa-tasks"></i><span class="nav-text">Consultar O.S.</span></a>
+                </div>
+            </div>
+            
+            <a href="{{ url_for('backup_page') }}" class="nav-link">
+                <i class="fa-solid fa-database"></i>
+                <span class="nav-text">Backup</span>
             </a>
         </nav>
     </aside>
 
     <div class="main-content">
         <header class="main-header">
-            <button id="sidebar-toggle" class="btn-toggle">
-                <i class="fa-solid fa-bars"></i>
-            </button>
+            <button id="sidebar-toggle" class="btn-toggle"><i class="fa-solid fa-bars"></i></button>
             <h2 class="page-title-text">{% block page_title %}{% endblock %}</h2>
         </header>
-
         {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-        <div class="flash-container">
-            {% for category, message in messages %}
-            <div class="flash-message flash-{{ category }}">
-                {{ message }}
+            {% if messages %}
+            <div class="flash-container">
+                {% for category, message in messages %}
+                <div class="flash-message flash-{{ category }}">{{ message }}</div>
+                {% endfor %}
             </div>
-            {% endfor %}
-        </div>
-        {% endif %}
+            {% endif %}
         {% endwith %}
-
         <main class="container">
             {% block content %}{% endblock %}
         </main>
@@ -79,5 +87,4 @@
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
     {% block scripts %}{% endblock %}
 </body>
-
 </html>
