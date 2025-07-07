@@ -6,8 +6,7 @@
 {% block content %}
 <div class="search-container">
     <form method="get" action="{{ url_for('pesquisar_clientes') }}" class="search-form">
-        <input type="search" name="q" placeholder="Buscar por nome, razão social, CPF ou CNPJ..."
-            value="{{ query or '' }}" class="form-control">
+        <input type="search" name="q" placeholder="Buscar por nome, razão social, CPF ou CNPJ..." value="{{ query or '' }}" class="form-control">
         <button type="submit" class="btn-salvar btn-pesquisar">Pesquisar</button>
     </form>
     <a href="{{ url_for('cadastro_clientes') }}" class="btn-salvar btn-novo">
@@ -37,8 +36,7 @@
                     <a href="{{ url_for('editar_cliente', id=cliente.id) }}" title="Editar">
                         <i class="fa-solid fa-pencil"></i>
                     </a>
-                    <form method="POST" action="{{ url_for('excluir_cliente', id=cliente.id) }}" style="display:inline;"
-                        onsubmit="return confirm('Tem certeza que deseja excluir este cliente? A ação não pode ser desfeita.');">
+                    <form method="POST" action="{{ url_for('excluir_cliente', id=cliente.id) }}" style="display:inline;" onsubmit="return confirm('Tem certeza que deseja excluir este cliente? A ação não pode ser desfeita.');">
                         <button type="submit" class="btn-delete" title="Excluir">
                             <i class="fa-solid fa-trash"></i>
                         </button>
@@ -47,7 +45,7 @@
             </tr>
             {% else %}
             <tr>
-                <td colspan="5">Nenhum cliente encontrado.</td>
+                <td colspan="5" style="text-align: center; padding: 2rem;">Nenhum cliente encontrado.</td>
             </tr>
             {% endfor %}
         </tbody>

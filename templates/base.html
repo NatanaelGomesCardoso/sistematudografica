@@ -58,6 +58,7 @@
             </button>
             <h2 class="page-title-text">{% block page_title %}{% endblock %}</h2>
         </header>
+
         {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
         <div class="flash-container">
@@ -70,9 +71,6 @@
         {% endif %}
         {% endwith %}
 
-        <main class="container">
-            ...
-        </main>
         <main class="container">
             {% block content %}{% endblock %}
         </main>
