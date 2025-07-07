@@ -75,28 +75,33 @@ def cadastro_clientes_post():
     if tipo == 'cpf':
         cliente = Cliente(
             tipo='cpf',
-            nome=request.form['nome'],
-            cpf=request.form['cpf'],
-            email=request.form['email'],
-            telefone=request.form['telefone'],
-            como_conheceu=request.form['como_conheceu'],
+            nome=request.form.get('nome'),
+            cpf=request.form.get('cpf'),
+            email=request.form.get('email'), # Usando .get() para campos opcionais
+            telefone=request.form.get('telefone'),
+            como_conheceu=request.form.get('como_conheceu'),
             como_conheceu_outros=request.form.get('como_conheceu_outros', '')
         )
-    else:
+    else: # tipo == 'cnpj'
         cliente = Cliente(
             tipo='cnpj',
-            razao_social=request.form['razao_social'],
-            nome_fantasia=request.form['nome_fantasia'],
-            cnpj=request.form['cnpj'],
-            responsavel=request.form['responsavel'],
-            telefone_empresa=request.form['telefone_empresa'],
-            email_cnpj=request.form['email_cnpj'],
-            endereco_empresa=request.form['endereco_empresa'],
-            endereco_entrega=request.form['endereco_entrega'],
-            telefone=request.form['telefone'],
-            como_conheceu=request.form['como_conheceu'],
+            razao_social=request.form.get('razao_social'),
+            nome_fantasia=request.form.get('nome_fantasia'),
+            cnpj=request.form.get('cnpj'),
+            responsavel=request.form.get('responsavel'),
+            telefone_empresa=request.form.get('telefone_empresa'),
+            email_cnpj=request.form.get('email_cnpj'), # Usando .get()
+            endereco_empresa=request.form.get('endereco_empresa'),
+            endereco_entrega=request.form.get('endereco_entrega'),
+            telefone=request.form.get('telefone'),
+            como_conheceu=request.form.get('como_conheceu'),
             como_conheceu_outros=request.form.get('como_conheceu_outros', '')
         )
+
+    db.session.add(cliente)
+    db.session.commit()
+    # No futuro, vamos redirecionar para a lista de clientes
+    return redirect(url_for('cadastro_clientes'))
 
     db.session.add(cliente)
     db.session.commit()

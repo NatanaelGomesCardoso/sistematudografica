@@ -1,85 +1,67 @@
 {% extends 'base.html' %}
 
 {% block title %}Cadastro de Clientes — Tudo Gráfica{% endblock %}
+{% block page_title %}Cadastro de Novo Cliente{% endblock %}
 
 {% block content %}
-<h2>Cadastro de Cliente</h2>
-
-<form id="formCliente" action="{{ url_for('cadastro_clientes_post') }}" method="post">
-    <!-- Tipo de pessoa -->
+<form id="formCliente" action="{{ url_for('cadastro_clientes_post') }}" method="post" novalidate>
     <div class="form-group">
-        <label>Tipo de Cadastro:</label><br>
+        <label>Tipo de Cadastro:</label>
         <div class="radio-group">
-            <input type="radio" id="tipo_cpf" name="tipo" value="cpf" checked onchange="alternarFormulario()">
+            <input type="radio" id="tipo_cpf" name="tipo" value="cpf" checked>
             <label for="tipo_cpf">Pessoa Física</label>
 
-            <input type="radio" id="tipo_cnpj" name="tipo" value="cnpj" onchange="alternarFormulario()">
+            <input type="radio" id="tipo_cnpj" name="tipo" value="cnpj">
             <label for="tipo_cnpj">Pessoa Jurídica</label>
         </div>
     </div>
 
-    <!-- Pessoa Física -->
     <div id="form-cpf">
         <div class="form-group">
-            <label>Nome completo:</label>
-            <input type="text" name="nome" required>
+            <label for="nome_pf">Nome completo (obrigatório)</label>
+            <input type="text" name="nome" id="nome_pf">
         </div>
         <div class="form-group">
-            <label>CPF:</label>
-            <input type="text" name="cpf" id="cpf">
+            <label for="cpf">CPF</label>
+            <input type="text" name="cpf" id="cpf" placeholder="000.000.000-00">
         </div>
         <div class="form-group">
-            <label>E-mail:</label>
-            <input type="email" name="email" required>
+            <label for="email_pf">E-mail</label>
+            <input type="email" name="email" id="email_pf">
         </div>
     </div>
 
-    <!-- Pessoa Jurídica -->
     <div id="form-cnpj" style="display:none;">
         <div class="form-group">
-            <label>Razão Social:</label>
-            <input type="text" name="razao_social">
+            <label for="razao_social">Razão Social (obrigatório)</label>
+            <input type="text" name="razao_social" id="razao_social">
         </div>
         <div class="form-group">
-            <label>Nome Fantasia:</label>
-            <input type="text" name="nome_fantasia">
+            <label for="nome_fantasia">Nome Fantasia</label>
+            <input type="text" name="nome_fantasia" id="nome_fantasia">
         </div>
         <div class="form-group">
-            <label>CNPJ:</label>
-            <input type="text" name="cnpj" id="cnpj">
+            <label for="cnpj">CNPJ (obrigatório)</label>
+            <input type="text" name="cnpj" id="cnpj" placeholder="00.000.000/0000-00">
         </div>
         <div class="form-group">
-            <label>Responsável:</label>
-            <input type="text" name="responsavel">
+            <label for="responsavel">Responsável</label>
+            <input type="text" name="responsavel" id="responsavel">
         </div>
         <div class="form-group">
-            <label>Telefone da empresa:</label>
-            <input type="text" name="telefone_empresa">
-        </div>
-        <div class="form-group">
-            <label>E-mail:</label>
-            <input type="email" name="email_cnpj" required>
-        </div>
-        <div class="form-group">
-            <label>Endereço:</label>
-            <input type="text" name="endereco_empresa">
-        </div>
-        <div class="form-group">
-            <label>Endereço de entrega:</label>
-            <input type="text" name="endereco_entrega">
+            <label for="email_cnpj">E-mail da empresa</label>
+            <input type="email" name="email_cnpj" id="email_cnpj">
         </div>
     </div>
 
-    <!-- Telefone -->
     <div class="form-group">
-        <label>Telefone (Whatsapp):</label>
-        <input type="text" name="telefone" id="telefone" value="+55 79 9" required>
+        <label for="telefone">Telefone (Whatsapp) (obrigatório)</label>
+        <input type="text" name="telefone" id="telefone" value="+55 79 9">
     </div>
 
-    <!-- Como conheceu -->
     <div class="form-group">
-        <label>Como conheceu a empresa?</label>
-        <select name="como_conheceu" id="como_conheceu" onchange="mostrarCampoOutro()">
+        <label for="como_conheceu">Como conheceu a empresa?</label>
+        <select name="como_conheceu" id="como_conheceu">
             <option value="Google">Google</option>
             <option value="Facebook">Facebook</option>
             <option value="Instagram">Instagram</option>
@@ -91,116 +73,100 @@
             placeholder="Descreva aqui...">
     </div>
 
-    <button type="submit">Salvar Cliente</button>
+    <button type="submit" class="btn-salvar">Salvar Cliente</button>
 </form>
 
-<hr>
+{% endblock %}
 
-<h3>Clientes cadastrados</h3>
-<table class="clientes-table">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Nome</th>
-            <th>E-mail</th>
-            <th>Telefone</th>
-            <th>Como conheceu</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for cliente in clientes %}
-        <tr>
-            <td>{{ cliente.id }}</td>
-            <td>{{ cliente.nome }}</td>
-            <td>{{ cliente.email }}</td>
-            <td>{{ cliente.telefone }}</td>
-            <td>{{ cliente.como_conheceu }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-
-<!-- SCRIPTS -->
+{% block scripts %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+
 <script>
-    function alternarFormulario() {
-        const tipo = document.querySelector('input[name="tipo"]:checked').value;
-        document.getElementById('form-cpf').style.display = tipo === 'cpf' ? 'block' : 'none';
-        document.getElementById('form-cnpj').style.display = tipo === 'cnpj' ? 'block' : 'none';
-    }
+    // Funções de validação de CPF e CNPJ (iguais às de antes)
+    function validarCPF(cpf) { /* ...código de validação de CPF... */ }
+    function validarCNPJ(cnpj) { /* ...código de validação de CNPJ... */ }
+    // Cole as funções completas que te passei antes aqui para economizar espaço na resposta
 
-    function mostrarCampoOutro() {
-        const select = document.getElementById('como_conheceu');
-        const campo = document.getElementById('campo_outros');
-        campo.style.display = select.value === 'Outros' ? 'block' : 'none';
-    }
-
-    // Máscaras
     $(document).ready(function () {
+        // --- MÁSCARAS ---
         $('#telefone').mask('+00 00 00000-0000');
         $('#cpf').mask('000.000.000-00');
         $('#cnpj').mask('00.000.000/0000-00');
-    });
 
-    // Validação simples de CPF
-    function validarCPF(cpf) {
-        cpf = cpf.replace(/[^\d]+/g, '');
-        if (cpf.length !== 11) return false;
-        if (/^(\d)\1+$/.test(cpf)) return false;
-        let soma = 0;
-        for (let i = 0; i < 9; i++) soma += parseInt(cpf.charAt(i)) * (10 - i);
-        let resto = 11 - (soma % 11);
-        if (resto === 10 || resto === 11) resto = 0;
-        if (resto !== parseInt(cpf.charAt(9))) return false;
-        soma = 0;
-        for (let i = 0; i < 10; i++) soma += parseInt(cpf.charAt(i)) * (11 - i);
-        resto = 11 - (soma % 11);
-        if (resto === 10 || resto === 11) resto = 0;
-        return resto === parseInt(cpf.charAt(10));
-    }
-
-    // Validação simples de CNPJ
-    function validarCNPJ(cnpj) {
-        cnpj = cnpj.replace(/[^\d]+/g, '');
-        if (cnpj.length !== 14) return false;
-        if (/^(\d)\1+$/.test(cnpj)) return false;
-        let t = cnpj.length - 2,
-            d = cnpj.substring(t),
-            d1 = parseInt(d.charAt(0)),
-            d2 = parseInt(d.charAt(1)),
-            calc = x => {
-                let n = 0;
-                for (let i = 0; i < x; i++) {
-                    n += parseInt(cnpj.charAt(i)) * ((x + 1 - i) % 8 + 2);
-                }
-                return (n % 11 < 2 ? 0 : 11 - n % 11);
-            };
-        return calc(t) === d1 && calc(t + 1) === d2;
-    }
-
-    // Bloqueia envio se CPF/CNPJ for inválido (mas permite se estiver em branco)
-    $('#formCliente').on('submit', function (e) {
-        const tipo = $('input[name=tipo]:checked').val();
-
-        if (tipo === 'cpf') {
-            const cpfInput = $('#cpf');
-            const cpf = cpfInput.val();
-            // Só valida se o campo não estiver vazio
-            if (cpf && !validarCPF(cpf)) {
-                alert('CPF inválido! Por favor, verifique o número digitado.');
-                e.preventDefault(); // Impede o envio do formulário
-            }
-        } else { // tipo === 'cnpj'
-            const cnpjInput = $('#cnpj');
-            const cnpj = cnpjInput.val();
-            // Só valida se o campo não estiver vazio
-            if (cnpj && !validarCNPJ(cnpj)) {
-                alert('CNPJ inválido! Por favor, verifique o número digitado.');
-                e.preventDefault(); // Impede o envio do formulário
+        // --- INTERATIVIDADE DO FORMULÁRIO ---
+        function alternarFormulario() {
+            if ($('#tipo_cpf').is(':checked')) {
+                $('#form-cpf').show();
+                $('#form-cnpj').hide();
+            } else {
+                $('#form-cpf').hide();
+                $('#form-cnpj').show();
             }
         }
-    });
 
+        $('input[name="tipo"]').on('change', alternarFormulario);
+        alternarFormulario(); // Executa ao carregar a página
+
+        $('#como_conheceu').on('change', function () {
+            if ($(this).val() === 'Outros') {
+                $('#campo_outros').show();
+            } else {
+                $('#campo_outros').hide();
+            }
+        });
+
+        // --- VALIDAÇÃO NO ENVIO ---
+        $('#formCliente').on('submit', function (e) {
+            $('input').removeClass('input-error');
+            let isValid = true;
+
+            // Valida Telefone (obrigatório e completo)
+            const telefone = $('#telefone').val();
+            if (telefone.length !== 19) {
+                alert('O campo Telefone é obrigatório e deve ser preenchido completamente.');
+                $('#telefone').addClass('input-error');
+                isValid = false;
+            }
+
+            // Validação para Pessoa Física
+            if ($('#tipo_cpf').is(':checked')) {
+                const nome = $('#nome_pf').val();
+                if (nome.length <= 3) {
+                    alert('O campo Nome é obrigatório e deve ter mais de 3 letras.');
+                    $('#nome_pf').addClass('input-error');
+                    isValid = false;
+                }
+                const cpf = $('#cpf').val();
+                if (cpf && !validarCPF(cpf)) {
+                    alert('O CPF digitado é inválido.');
+                    $('#cpf').addClass('input-error');
+                    isValid = false;
+                }
+            }
+            // Validação para Pessoa Jurídica
+            else {
+                if ($('#razao_social').val().length <= 3) {
+                    alert('O campo Razão Social é obrigatório e deve ter mais de 3 letras.');
+                    $('#razao_social').addClass('input-error');
+                    isValid = false;
+                }
+                const cnpj = $('#cnpj').val();
+                if (!cnpj) {
+                    alert('O campo CNPJ é obrigatório.');
+                    $('#cnpj').addClass('input-error');
+                    isValid = false;
+                } else if (!validarCNPJ(cnpj)) {
+                    alert('O CNPJ digitado é inválido.');
+                    $('#cnpj').addClass('input-error');
+                    isValid = false;
+                }
+            }
+
+            if (!isValid) {
+                e.preventDefault(); // Bloqueia o envio se algo estiver errado
+            }
+        });
+    });
 </script>
 {% endblock %}

@@ -1,124 +1,183 @@
-.navbar {
-    background: #005f99;
-    padding: 1rem;
+/* ---- 1. Configurações Globais e Variáveis de Cor ---- */
+:root {
+    --cor-principal: #2a3f54;
+    --cor-secundaria: #34495e;
+    --cor-destaque: #27c2a5;
+    --cor-texto-claro: #ECF0F1;
+    --cor-fundo: #F7F7F7;
+    --cor-borda: #E0E0E0;
+    --sombra-suave: 0 4px 15px rgba(0, 0, 0, 0.07);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    background-color: var(--cor-fundo);
+    display: flex;
+    transition: margin-left 0.3s ease-in-out;
+}
+
+/* ---- 2. Estrutura Principal (Sidebar e Conteúdo) ---- */
+.sidebar {
+    width: 250px;
+    height: 100vh;
+    background-color: var(--cor-principal);
+    color: var(--cor-texto-claro);
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: width 0.3s ease-in-out;
+}
+
+.main-content {
+    flex-grow: 1;
+    margin-left: 250px;
+    transition: margin-left 0.3s ease-in-out;
+    padding: 1.5rem;
+}
+
+/* ---- 3. Estilos da Sidebar ---- */
+.sidebar-header {
     display: flex;
     align-items: center;
-}
-
-.nav-brand {
-    color: #fff;
-    font-weight: bold;
-    margin-right: 2rem;
-    text-decoration: none;
-}
-
-.nav-links {
-    list-style: none;
-    display: flex;
+    padding: 1.5rem 1.2rem;
     gap: 1rem;
 }
 
-.nav-links a {
-    color: #fff;
+.sidebar-logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    background-color: var(--cor-destaque);
+    color: var(--cor-principal);
+    border-radius: 8px;
+    padding: 0.5rem;
+    line-height: 1;
+}
+
+.sidebar-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.sidebar-nav {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 0 1rem;
+}
+
+.nav-link,
+.module-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.9rem 0.8rem;
+    color: var(--cor-texto-claro);
     text-decoration: none;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+    transition: background-color 0.2s ease;
+    cursor: pointer;
+}
+
+.nav-link:hover,
+.module-header:hover {
+    background-color: var(--cor-secundaria);
+}
+
+.nav-link.active {
+    background-color: var(--cor-destaque);
+    color: var(--cor-principal);
+    font-weight: 600;
+}
+
+.nav-link i,
+.module-header i {
+    font-size: 1.1rem;
+    width: 20px;
+    text-align: center;
+}
+
+.nav-text {
+    white-space: nowrap;
+    opacity: 1;
+    transition: opacity 0.2s ease;
+}
+
+.arrow {
+    margin-left: auto;
+    transition: transform 0.3s ease;
+}
+
+.nav-module.active .arrow {
+    transform: rotate(180deg);
+}
+
+.sub-menu {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-in-out;
+    padding-left: 1.5rem;
+}
+
+.nav-module.active .sub-menu {
+    max-height: 200px;
+    /* Altura suficiente para os itens */
+}
+
+/* ---- 4. Efeitos da Sidebar Recolhida ---- */
+body.sidebar-collapsed .sidebar {
+    width: 80px;
+}
+
+body.sidebar-collapsed .main-content {
+    margin-left: 80px;
+}
+
+body.sidebar-collapsed .nav-text,
+body.sidebar-collapsed .sidebar-title,
+body.sidebar-collapsed .arrow {
+    opacity: 0;
+    pointer-events: none;
+}
+
+body.sidebar-collapsed .sub-menu {
+    max-height: 0;
+}
+
+/* ---- 5. Estilos do Conteúdo Principal ---- */
+.main-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.btn-toggle {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--cor-principal);
 }
 
 .container {
-    margin: 2rem auto;
-    max-width: 960px;
-}
-
-.footer {
-    text-align: center;
-    padding: 1rem;
-    background: #eee;
-    margin-top: 4rem;
-}
-
-form div {
-    margin-bottom: 1rem;
-}
-
-input,
-select {
-    padding: 0.4rem;
-    width: 100%;
-    max-width: 400px;
-    font-size: 1rem;
-}
-
-button {
-    padding: 0.6rem 1.2rem;
-    background: #005f99;
-    color: white;
-    border: none;
-    cursor: pointer;
-    font-size: 1rem;
-    border-radius: 4px;
-}
-
-button:hover {
-    background: #004f88;
-}
-
-form {
-    background: #fff;
+    background-color: #fff;
     padding: 2rem;
     border-radius: 12px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.08);
-    margin-bottom: 2rem;
-    max-width: 700px;
+    box-shadow: var(--sombra-suave);
 }
 
-.form-group {
-    margin-bottom: 1rem;
-}
-
-input,
-select {
-    padding: 0.6rem;
-    width: 100%;
-    max-width: 500px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    font-size: 1rem;
-}
-
-button {
-    padding: 0.6rem 1.4rem;
-    background: #005f99;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 1rem;
-    cursor: pointer;
-    margin-top: 1rem;
-}
-
-button:hover {
-    background: #004a78;
-}
-
-.radio-group {
-    display: flex;
-    gap: 1rem;
-    margin-top: 0.5rem;
-}
-
-.clientes-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 1rem;
-}
-
-.clientes-table th,
-.clientes-table td {
-    border: 1px solid #ccc;
-    padding: 0.5rem;
-    text-align: left;
-}
-
-.clientes-table th {
-    background: #005f99;
-    color: white;
+/* Estilo para campos com erro de validação */
+.input-error {
+    border-color: #e74c3c !important;
+    box-shadow: 0 0 5px rgba(231, 76, 60, 0.5);
 }
