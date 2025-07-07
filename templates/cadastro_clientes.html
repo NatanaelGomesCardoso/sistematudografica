@@ -1,170 +1,168 @@
 {% extends 'base.html' %}
 
-{% block title %}Cadastro de Clientes — Tudo Gráfica{% endblock %}
+{% block title %}Cadastrar Cliente — Tudo Gráfica{% endblock %}
 {% block page_title %}Cadastro de Novo Cliente{% endblock %}
 
 {% block content %}
 <form id="formCliente" action="{{ url_for('cadastro_clientes_post') }}" method="post" novalidate>
     <div class="form-group">
-        <label>Tipo de Cadastro:</label>
+        <label>Tipo de Cadastro</label>
         <div class="radio-group">
             <input type="radio" id="tipo_cpf" name="tipo" value="cpf" checked>
             <label for="tipo_cpf">Pessoa Física</label>
-
             <input type="radio" id="tipo_cnpj" name="tipo" value="cnpj">
             <label for="tipo_cnpj">Pessoa Jurídica</label>
         </div>
     </div>
 
+    <hr style="border: none; border-top: 1px solid #eee; margin: 2rem 0;">
+
     <div id="form-cpf">
         <div class="form-group">
-            <label for="nome_pf">Nome completo (obrigatório)</label>
+            <label for="nome_pf">Nome completo <span class="label-note">*obrigatório</span></label>
             <input type="text" name="nome" id="nome_pf">
+            <div class="error-message"></div>
         </div>
         <div class="form-group">
-            <label for="cpf">CPF</label>
+            <label for="telefone_pf">Telefone (Whatsapp) <span class="label-note">*obrigatório</span></label>
+            <input type="text" name="telefone" id="telefone_pf" class="telefone-input">
+            <div class="error-message"></div>
+        </div>
+        <div class="form-group">
+            <label for="cpf">CPF <span class="label-note">(opcional)</span></label>
             <input type="text" name="cpf" id="cpf" placeholder="000.000.000-00">
+            <div class="error-message"></div>
         </div>
         <div class="form-group">
-            <label for="email_pf">E-mail</label>
+            <label for="email_pf">E-mail <span class="label-note">(opcional)</span></label>
             <input type="email" name="email" id="email_pf">
+            <div class="error-message"></div>
+        </div>
+        <div class="form-group">
+            <label for="endereco_entrega_pf">Endereço de Entrega <span class="label-note">(opcional)</span></label>
+            <input type="text" name="endereco_entrega_pf" id="endereco_entrega_pf">
+            <div class="error-message"></div>
         </div>
     </div>
 
     <div id="form-cnpj" style="display:none;">
         <div class="form-group">
-            <label for="razao_social">Razão Social (obrigatório)</label>
+            <label for="razao_social">Razão Social <span class="label-note">*obrigatório</span></label>
             <input type="text" name="razao_social" id="razao_social">
+            <div class="error-message"></div>
         </div>
         <div class="form-group">
-            <label for="nome_fantasia">Nome Fantasia</label>
-            <input type="text" name="nome_fantasia" id="nome_fantasia">
+            <label for="telefone_pj">Telefone de Contato <span class="label-note">*obrigatório</span></label>
+            <input type="text" name="telefone" id="telefone_pj" class="telefone-input">
+            <div class="error-message"></div>
         </div>
         <div class="form-group">
-            <label for="cnpj">CNPJ (obrigatório)</label>
+            <label for="cnpj">CNPJ <span class="label-note">(opcional)</span></label>
             <input type="text" name="cnpj" id="cnpj" placeholder="00.000.000/0000-00">
+            <div class="error-message"></div>
         </div>
         <div class="form-group">
-            <label for="responsavel">Responsável</label>
-            <input type="text" name="responsavel" id="responsavel">
-        </div>
-        <div class="form-group">
-            <label for="email_cnpj">E-mail da empresa</label>
+            <label for="email_cnpj">E-mail da empresa <span class="label-note">(opcional)</span></label>
             <input type="email" name="email_cnpj" id="email_cnpj">
+            <div class="error-message"></div>
         </div>
-    </div>
-
-    <div class="form-group">
-        <label for="telefone">Telefone (Whatsapp) (obrigatório)</label>
-        <input type="text" name="telefone" id="telefone" value="+55 79 9">
-    </div>
-
-    <div class="form-group">
-        <label for="como_conheceu">Como conheceu a empresa?</label>
-        <select name="como_conheceu" id="como_conheceu">
-            <option value="Google">Google</option>
-            <option value="Facebook">Facebook</option>
-            <option value="Instagram">Instagram</option>
-            <option value="Indicação">Indicação</option>
-            <option value="Prospecção direta">Prospecção direta</option>
-            <option value="Outros">Outros</option>
-        </select>
-        <input type="text" name="como_conheceu_outros" id="campo_outros" style="display:none;"
-            placeholder="Descreva aqui...">
+        <div class="form-group">
+            <label for="endereco_empresa">Endereço da Empresa <span class="label-note">(opcional)</span></label>
+            <input type="text" name="endereco_empresa" id="endereco_empresa">
+            <div class="error-message"></div>
+        </div>
+        <div class="form-group">
+            <label for="endereco_entrega_pj">Endereço de Entrega <span class="label-note">(opcional)</span></label>
+            <input type="text" name="endereco_entrega_pj" id="endereco_entrega_pj">
+            <div class="error-message"></div>
+        </div>
     </div>
 
     <button type="submit" class="btn-salvar">Salvar Cliente</button>
 </form>
-
 {% endblock %}
 
 {% block scripts %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
-
 <script>
-    // Funções de validação de CPF e CNPJ (iguais às de antes)
-    function validarCPF(cpf) { /* ...código de validação de CPF... */ }
-    function validarCNPJ(cnpj) { /* ...código de validação de CNPJ... */ }
-    // Cole as funções completas que te passei antes aqui para economizar espaço na resposta
+    function validarCPF(cpf) { cpf = cpf.replace(/[^\d]+/g, ''); if (cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) return false; let s = 0, r; for (let i = 1; i <= 9; i++) s += parseInt(cpf.substring(i - 1, i)) * (11 - i); r = (s * 10) % 11; if ((r === 10) || (r === 11)) r = 0; if (r !== parseInt(cpf.substring(9, 10))) return false; s = 0; for (let i = 1; i <= 10; i++) s += parseInt(cpf.substring(i - 1, i)) * (12 - i); r = (s * 10) % 11; if ((r === 10) || (r === 11)) r = 0; return r === parseInt(cpf.substring(10, 11)); }
+    function validarCNPJ(cnpj) { cnpj = cnpj.replace(/[^\d]+/g, ''); if (cnpj.length !== 14 || /^(\d)\1+$/.test(cnpj)) return false; let t = cnpj.length - 2, n = cnpj.substring(0, t), d = cnpj.substring(t), s = 0, p = t - 7; for (let i = t; i >= 1; i--) { s += n.charAt(t - i) * p--; if (p < 2) p = 9; } let r = s % 11 < 2 ? 0 : 11 - s % 11; if (r != d.charAt(0)) return false; t = t + 1; n = cnpj.substring(0, t); s = 0; p = t - 7; for (let i = t; i >= 1; i--) { s += n.charAt(t - i) * p--; if (p < 2) p = 9; } r = s % 11 < 2 ? 0 : 11 - s % 11; return r == d.charAt(1); }
+    function validarEmail(email) { const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/; return re.test(String(email).toLowerCase()); }
 
     $(document).ready(function () {
-        // --- MÁSCARAS ---
-        $('#telefone').mask('+00 00 00000-0000');
+        $('.telefone-input').mask('+00 00 9 0000-0000');
         $('#cpf').mask('000.000.000-00');
         $('#cnpj').mask('00.000.000/0000-00');
 
-        // --- INTERATIVIDADE DO FORMULÁRIO ---
         function alternarFormulario() {
             if ($('#tipo_cpf').is(':checked')) {
-                $('#form-cpf').show();
-                $('#form-cnpj').hide();
+                $('#form-cpf').slideDown(200);
+                $('#form-cnpj').slideUp(200);
+                $('#telefone_pj').val(''); // Limpa o telefone do outro form
             } else {
-                $('#form-cpf').hide();
-                $('#form-cnpj').show();
+                $('#form-cpf').slideUp(200);
+                $('#form-cnpj').slideDown(200);
+                $('#telefone_pf').val(''); // Limpa o telefone do outro form
             }
         }
-
         $('input[name="tipo"]').on('change', alternarFormulario);
-        alternarFormulario(); // Executa ao carregar a página
+        alternarFormulario();
 
-        $('#como_conheceu').on('change', function () {
-            if ($(this).val() === 'Outros') {
-                $('#campo_outros').show();
-            } else {
-                $('#campo_outros').hide();
-            }
-        });
-
-        // --- VALIDAÇÃO NO ENVIO ---
         $('#formCliente').on('submit', function (e) {
-            $('input').removeClass('input-error');
             let isValid = true;
+            $('.error-message').text('');
+            $('input').removeClass('input-error');
 
-            // Valida Telefone (obrigatório e completo)
-            const telefone = $('#telefone').val();
-            if (telefone.length !== 19) {
-                alert('O campo Telefone é obrigatório e deve ser preenchido completamente.');
-                $('#telefone').addClass('input-error');
+            function setError(inputId, message) {
+                $('#' + inputId).addClass('input-error');
+                $('#' + inputId).closest('.form-group').find('.error-message').text(message);
                 isValid = false;
             }
 
-            // Validação para Pessoa Física
             if ($('#tipo_cpf').is(':checked')) {
-                const nome = $('#nome_pf').val();
-                if (nome.length <= 3) {
-                    alert('O campo Nome é obrigatório e deve ter mais de 3 letras.');
-                    $('#nome_pf').addClass('input-error');
-                    isValid = false;
+                // Validações para Pessoa Física
+                if ($('#nome_pf').val().length <= 3) {
+                    setError('nome_pf', 'O nome deve ter mais de 3 letras.');
+                }
+                if ($('#telefone_pf').mask().val().replace(/[^\d]/g, '').length < 13) {
+                    setError('telefone_pf', 'Preencha o telefone completamente.');
                 }
                 const cpf = $('#cpf').val();
                 if (cpf && !validarCPF(cpf)) {
-                    alert('O CPF digitado é inválido.');
-                    $('#cpf').addClass('input-error');
-                    isValid = false;
+                    setError('cpf', 'Este CPF é inválido.');
                 }
-            }
-            // Validação para Pessoa Jurídica
-            else {
+                const email_pf = $('#email_pf').val();
+                if (email_pf && !validarEmail(email_pf)) {
+                    setError('email_pf', 'Este formato de e-mail é inválido.');
+                }
+            } else {
+                // Validações para Pessoa Jurídica
                 if ($('#razao_social').val().length <= 3) {
-                    alert('O campo Razão Social é obrigatório e deve ter mais de 3 letras.');
-                    $('#razao_social').addClass('input-error');
-                    isValid = false;
+                    setError('razao_social', 'A razão social deve ter mais de 3 letras.');
+                }
+                if ($('#telefone_pj').mask().val().replace(/[^\d]/g, '').length < 13) {
+                    setError('telefone_pj', 'Preencha o telefone completamente.');
                 }
                 const cnpj = $('#cnpj').val();
-                if (!cnpj) {
-                    alert('O campo CNPJ é obrigatório.');
-                    $('#cnpj').addClass('input-error');
-                    isValid = false;
-                } else if (!validarCNPJ(cnpj)) {
-                    alert('O CNPJ digitado é inválido.');
-                    $('#cnpj').addClass('input-error');
-                    isValid = false;
+                if (cnpj && !validarCNPJ(cnpj)) {
+                    setError('cnpj', 'Este CNPJ é inválido.');
+                }
+                const email_pj = $('#email_cnpj').val();
+                if (email_pj && !validarEmail(email_pj)) {
+                    setError('email_cnpj', 'Este formato de e-mail é inválido.');
                 }
             }
 
             if (!isValid) {
-                e.preventDefault(); // Bloqueia o envio se algo estiver errado
+                e.preventDefault();
+            } else {
+                // Unifica o campo de telefone antes de enviar
+                if ($('#tipo_cpf').is(':checked')) {
+                    $('#telefone_pj').prop('disabled', true);
+                } else {
+                    $('#telefone_pf').prop('disabled', true);
+                }
             }
         });
     });

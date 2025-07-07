@@ -14,7 +14,6 @@ document.addEventListener('DOMContentLoaded', function () {
             // Se a sidebar estiver recolhida, primeiro expanda
             if (document.body.classList.contains('sidebar-collapsed')) {
                 document.body.classList.remove('sidebar-collapsed');
-                // Adiciona um pequeno delay para a animação do submenu ser mais suave
                 setTimeout(() => {
                     module.classList.toggle('active');
                 }, 150);

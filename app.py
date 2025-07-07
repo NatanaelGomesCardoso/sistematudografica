@@ -2,120 +2,125 @@ import os
 from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
+from sqlalchemy import or_
 
-# === 1. Configurações iniciais ===
-
+# --- 1. CONFIGURAÇÃO INICIAL ---
 basedir = os.path.abspath(os.path.dirname(__file__))
-
 app = Flask(__name__)
-
 db_path = os.path.join(basedir, 'data', 'banco.db')
 app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
 db = SQLAlchemy(app)
 
-# === 2. Modelo de Cliente ===
 
+# --- 2. MODELOS DO BANCO DE DADOS (COM TODOS OS CAMPOS) ---
 class Cliente(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    tipo = db.Column(db.String(10))  # 'cpf' ou 'cnpj'
+    tipo = db.Column(db.String(10), nullable=False)
 
-    # Pessoa Física
+    # Campos Pessoa Física
     nome = db.Column(db.String(100))
-    cpf = db.Column(db.String(20))
+    cpf = db.Column(db.String(20), unique=True)
     email = db.Column(db.String(120))
+    endereco_entrega_pf = db.Column(db.String(255)) # Novo
 
-    # Pessoa Jurídica
+    # Campos Pessoa Jurídica
     razao_social = db.Column(db.String(100))
-    nome_fantasia = db.Column(db.String(100))
-    cnpj = db.Column(db.String(20))
-    responsavel = db.Column(db.String(100))
-    telefone_empresa = db.Column(db.String(30))
+    cnpj = db.Column(db.String(20), unique=True)
     email_cnpj = db.Column(db.String(120))
-    endereco_empresa = db.Column(db.String(255))
-    endereco_entrega = db.Column(db.String(255))
+    endereco_empresa = db.Column(db.String(255)) # Novo
+    endereco_entrega_pj = db.Column(db.String(255)) # Novo
 
-    # Comum
-    telefone = db.Column(db.String(30))
-    como_conheceu = db.Column(db.String(100))
-    como_conheceu_outros = db.Column(db.String(100))
+    # Campo Comum
+    telefone = db.Column(db.String(30), nullable=False)
 
     def __repr__(self):
         return f'<Cliente {self.nome or self.razao_social}>'
 
 
-# === 3. Contexto para mostrar a data atual nos templates ===
-
+# --- 3. ROTAS DO SISTEMA ---
 @app.context_processor
 def inject_now():
     return {'now': datetime.utcnow}
-
-# === 4. Rotas ===
 
 @app.route('/')
 def home():
     return render_template('home.html')
 
-@app.route('/produtos')
-def cadastro_produtos():
-    return render_template('coming_soon.html', módulo='Cadastro de Produtos')
-
-# 👉 GET: mostrar formulário + clientes
+# NOVA ROTA: Listar e Pesquisar Clientes
 @app.route('/clientes')
+def pesquisar_clientes():
+    query = request.args.get('q', '') # Pega o termo de busca da URL, se houver
+    if query:
+        # Busca por nome, razao_social, cpf ou cnpj
+        search_term = f"%{query}%"
+        clientes = Cliente.query.filter(or_(
+            Cliente.nome.ilike(search_term),
+            Cliente.razao_social.ilike(search_term),
+            Cliente.cpf.ilike(search_term),
+            Cliente.cnpj.ilike(search_term)
+        )).all()
+    else:
+        clientes = Cliente.query.all() # Se não houver busca, lista todos
+        
+    return render_template('pesquisar_clientes.html', clientes=clientes, query=query)
+
+# Rota para a página de cadastro (GET)
+@app.route('/clientes/novo')
 def cadastro_clientes():
-    clientes = Cliente.query.all()
-    return render_template('cadastro_clientes.html', clientes=clientes)
+    return render_template('cadastro_clientes.html')
 
-
-@app.route('/clientes', methods=['POST'])
+# Rota que recebe os dados do formulário (POST)
+@app.route('/clientes/novo', methods=['POST'])
 def cadastro_clientes_post():
-    tipo = request.form['tipo']
+    tipo = request.form.get('tipo')
 
     if tipo == 'cpf':
-        cliente = Cliente(
+        if request.form.get('cpf'):
+            if Cliente.query.filter_by(cpf=request.form.get('cpf')).first():
+                return "Erro: CPF já cadastrado!", 400
+        
+        novo_cliente = Cliente(
             tipo='cpf',
             nome=request.form.get('nome'),
-            cpf=request.form.get('cpf'),
-            email=request.form.get('email'), # Usando .get() para campos opcionais
             telefone=request.form.get('telefone'),
-            como_conheceu=request.form.get('como_conheceu'),
-            como_conheceu_outros=request.form.get('como_conheceu_outros', '')
+            cpf=request.form.get('cpf'),
+            email=request.form.get('email'),
+            endereco_entrega_pf=request.form.get('endereco_entrega_pf')
         )
-    else: # tipo == 'cnpj'
-        cliente = Cliente(
+    elif tipo == 'cnpj':
+        if request.form.get('cnpj'):
+            if Cliente.query.filter_by(cnpj=request.form.get('cnpj')).first():
+                return "Erro: CNPJ já cadastrado!", 400
+                
+        novo_cliente = Cliente(
             tipo='cnpj',
             razao_social=request.form.get('razao_social'),
-            nome_fantasia=request.form.get('nome_fantasia'),
-            cnpj=request.form.get('cnpj'),
-            responsavel=request.form.get('responsavel'),
-            telefone_empresa=request.form.get('telefone_empresa'),
-            email_cnpj=request.form.get('email_cnpj'), # Usando .get()
-            endereco_empresa=request.form.get('endereco_empresa'),
-            endereco_entrega=request.form.get('endereco_entrega'),
             telefone=request.form.get('telefone'),
-            como_conheceu=request.form.get('como_conheceu'),
-            como_conheceu_outros=request.form.get('como_conheceu_outros', '')
+            cnpj=request.form.get('cnpj'),
+            email_cnpj=request.form.get('email_cnpj'),
+            endereco_empresa=request.form.get('endereco_empresa'),
+            endereco_entrega_pj=request.form.get('endereco_entrega_pj')
         )
+    else:
+        return "Erro: tipo de cadastro inválido", 400
 
-    db.session.add(cliente)
+    db.session.add(novo_cliente)
     db.session.commit()
-    # No futuro, vamos redirecionar para a lista de clientes
-    return redirect(url_for('cadastro_clientes'))
+    # Redireciona para a lista de clientes com mensagem de sucesso (faremos no futuro)
+    return redirect(url_for('pesquisar_clientes'))
 
-    db.session.add(cliente)
-    db.session.commit()
-    return redirect(url_for('cadastro_clientes'))
-
+@app.route('/produtos')
+def cadastro_produtos():
+    return render_template('coming_soon.html')
 
 @app.route('/os')
 def os_listar():
-    return render_template('coming_soon.html', módulo='Listagem de OS')
+    return render_template('coming_soon.html')
 
-# === 5. Criar o banco e rodar o app ===
-
+# --- 4. EXECUÇÃO ---
 if __name__ == '__main__':
-    os.makedirs(os.path.join(basedir, 'data'), exist_ok=True)
     with app.app_context():
+        os.makedirs(os.path.join(basedir, 'data'), exist_ok=True)
         db.create_all()
     app.run(debug=True)
