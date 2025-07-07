@@ -57,7 +57,7 @@
             <div class="error-message"></div>
         </div>
         <div class="form-group">
-            <label for="cnpj">CNPJ <span class="label-note">(opcional)</span></label>
+            <label for="cnpj">CNPJ <span class="label-note">*obrigatório</span></label>
             <input type="text" name="cnpj" id="cnpj" placeholder="00.000.000/0000-00">
             <div class="error-message"></div>
         </div>
@@ -78,6 +78,21 @@
         </div>
     </div>
 
+    <div class="form-group">
+        <label for="como_conheceu">Como conheceu a empresa? <span class="label-note">*obrigatório</span></label>
+        <select name="como_conheceu" id="como_conheceu">
+            <option value="">Selecione uma opção</option>
+            <option value="Google">Google</option>
+            <option value="Facebook">Facebook</option>
+            <option value="Instagram">Instagram</option>
+            <option value="Indicação">Indicação</option>
+            <option value="Prospecção direta">Prospecção direta</option>
+            <option value="Outros">Outros</option>
+        </select>
+        <div class="error-message"></div>
+        <input type="text" name="como_conheceu_outros" id="campo_outros" style="display:none; margin-top: 1rem;" placeholder="Descreva aqui...">
+    </div>
+
     <button type="submit" class="btn-salvar">Salvar Cliente</button>
 </form>
 {% endblock %}
@@ -86,9 +101,10 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
 <script>
+    // Funções de validação de CPF e CNPJ (colar o código completo aqui)
     function validarCPF(cpf) { cpf = cpf.replace(/[^\d]+/g, ''); if (cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) return false; let s = 0, r; for (let i = 1; i <= 9; i++) s += parseInt(cpf.substring(i - 1, i)) * (11 - i); r = (s * 10) % 11; if ((r === 10) || (r === 11)) r = 0; if (r !== parseInt(cpf.substring(9, 10))) return false; s = 0; for (let i = 1; i <= 10; i++) s += parseInt(cpf.substring(i - 1, i)) * (12 - i); r = (s * 10) % 11; if ((r === 10) || (r === 11)) r = 0; return r === parseInt(cpf.substring(10, 11)); }
     function validarCNPJ(cnpj) { cnpj = cnpj.replace(/[^\d]+/g, ''); if (cnpj.length !== 14 || /^(\d)\1+$/.test(cnpj)) return false; let t = cnpj.length - 2, n = cnpj.substring(0, t), d = cnpj.substring(t), s = 0, p = t - 7; for (let i = t; i >= 1; i--) { s += n.charAt(t - i) * p--; if (p < 2) p = 9; } let r = s % 11 < 2 ? 0 : 11 - s % 11; if (r != d.charAt(0)) return false; t = t + 1; n = cnpj.substring(0, t); s = 0; p = t - 7; for (let i = t; i >= 1; i--) { s += n.charAt(t - i) * p--; if (p < 2) p = 9; } r = s % 11 < 2 ? 0 : 11 - s % 11; return r == d.charAt(1); }
-    function validarEmail(email) { const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/; return re.test(String(email).toLowerCase()); }
+    function validarEmail(email) { const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/; return re.test(String(email).toLowerCase());}
 
     $(document).ready(function () {
         $('.telefone-input').mask('+00 00 9 0000-0000');
@@ -99,65 +115,62 @@
             if ($('#tipo_cpf').is(':checked')) {
                 $('#form-cpf').slideDown(200);
                 $('#form-cnpj').slideUp(200);
-                $('#telefone_pj').val(''); // Limpa o telefone do outro form
             } else {
                 $('#form-cpf').slideUp(200);
                 $('#form-cnpj').slideDown(200);
-                $('#telefone_pf').val(''); // Limpa o telefone do outro form
             }
         }
         $('input[name="tipo"]').on('change', alternarFormulario);
         alternarFormulario();
+        
+        $('#como_conheceu').on('change', function () {
+            $('#campo_outros').toggle($(this).val() === 'Outros');
+        });
 
         $('#formCliente').on('submit', function (e) {
             let isValid = true;
             $('.error-message').text('');
-            $('input').removeClass('input-error');
-
-            function setError(inputId, message) {
-                $('#' + inputId).addClass('input-error');
-                $('#' + inputId).closest('.form-group').find('.error-message').text(message);
+            $('input, select').removeClass('input-error');
+            
+            function setError(elementId, message) {
+                $('#' + elementId).addClass('input-error');
+                $('#' + elementId).closest('.form-group').find('.error-message').text(message);
                 isValid = false;
             }
 
             if ($('#tipo_cpf').is(':checked')) {
-                // Validações para Pessoa Física
-                if ($('#nome_pf').val().length <= 3) {
-                    setError('nome_pf', 'O nome deve ter mais de 3 letras.');
-                }
-                if ($('#telefone_pf').mask().val().replace(/[^\d]/g, '').length < 13) {
-                    setError('telefone_pf', 'Preencha o telefone completamente.');
-                }
+                // Validações OBRIGATÓRIAS para Pessoa Física
+                if ($('#nome_pf').val().trim().length <= 3) setError('nome_pf', 'O nome deve ter mais de 3 letras.');
+                if ($('#telefone_pf').mask().val().replace(/[^\d]/g, '').length < 13) setError('telefone_pf', 'Preencha o telefone completamente.');
+                if ($('#como_conheceu').val() === "") setError('como_conheceu', 'Selecione como conheceu a empresa.');
+
+                // Validações OPCIONAIS para Pessoa Física
                 const cpf = $('#cpf').val();
-                if (cpf && !validarCPF(cpf)) {
-                    setError('cpf', 'Este CPF é inválido.');
-                }
+                if (cpf && !validarCPF(cpf)) setError('cpf', 'Este CPF é inválido.');
                 const email_pf = $('#email_pf').val();
-                if (email_pf && !validarEmail(email_pf)) {
-                    setError('email_pf', 'Este formato de e-mail é inválido.');
-                }
-            } else {
-                // Validações para Pessoa Jurídica
-                if ($('#razao_social').val().length <= 3) {
-                    setError('razao_social', 'A razão social deve ter mais de 3 letras.');
-                }
-                if ($('#telefone_pj').mask().val().replace(/[^\d]/g, '').length < 13) {
-                    setError('telefone_pj', 'Preencha o telefone completamente.');
-                }
+                if (email_pf && !validarEmail(email_pf)) setError('email_pf', 'Formato de e-mail inválido.');
+
+            } else { // Validações para Pessoa Jurídica
+                // Validações OBRIGATÓRIAS para Pessoa Jurídica
+                if ($('#razao_social').val().trim().length <= 3) setError('razao_social', 'A razão social deve ter mais de 3 letras.');
+                if ($('#telefone_pj').mask().val().replace(/[^\d]/g, '').length < 13) setError('telefone_pj', 'Preencha o telefone completamente.');
                 const cnpj = $('#cnpj').val();
-                if (cnpj && !validarCNPJ(cnpj)) {
+                if (!cnpj) {
+                    setError('cnpj', 'O CNPJ é obrigatório.');
+                } else if (!validarCNPJ(cnpj)) {
                     setError('cnpj', 'Este CNPJ é inválido.');
                 }
+                if ($('#como_conheceu').val() === "") setError('como_conheceu', 'Selecione como conheceu a empresa.');
+
+                // Validações OPCIONAIS para Pessoa Jurídica
                 const email_pj = $('#email_cnpj').val();
-                if (email_pj && !validarEmail(email_pj)) {
-                    setError('email_cnpj', 'Este formato de e-mail é inválido.');
-                }
+                if (email_pj && !validarEmail(email_pj)) setError('email_cnpj', 'Formato de e-mail inválido.');
             }
 
             if (!isValid) {
                 e.preventDefault();
             } else {
-                // Unifica o campo de telefone antes de enviar
+                // Desabilita o campo de telefone que não está sendo usado para não ser enviado
                 if ($('#tipo_cpf').is(':checked')) {
                     $('#telefone_pj').prop('disabled', true);
                 } else {

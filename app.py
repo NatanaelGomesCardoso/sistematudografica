@@ -13,7 +13,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
 
-# --- 2. MODELOS DO BANCO DE DADOS (COM TODOS OS CAMPOS) ---
+# --- 2. MODELOS DO BANCO DE DADOS (COM CAMPOS ATUALIZADOS) ---
 class Cliente(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     tipo = db.Column(db.String(10), nullable=False)
@@ -22,17 +22,19 @@ class Cliente(db.Model):
     nome = db.Column(db.String(100))
     cpf = db.Column(db.String(20), unique=True)
     email = db.Column(db.String(120))
-    endereco_entrega_pf = db.Column(db.String(255)) # Novo
+    endereco_entrega_pf = db.Column(db.String(255))
 
     # Campos Pessoa Jurídica
     razao_social = db.Column(db.String(100))
     cnpj = db.Column(db.String(20), unique=True)
     email_cnpj = db.Column(db.String(120))
-    endereco_empresa = db.Column(db.String(255)) # Novo
-    endereco_entrega_pj = db.Column(db.String(255)) # Novo
+    endereco_empresa = db.Column(db.String(255))
+    endereco_entrega_pj = db.Column(db.String(255))
 
-    # Campo Comum
+    # Campos Comuns
     telefone = db.Column(db.String(30), nullable=False)
+    como_conheceu = db.Column(db.String(100)) # Campo adicionado
+    como_conheceu_outros = db.Column(db.String(100)) # Campo adicionado
 
     def __repr__(self):
         return f'<Cliente {self.nome or self.razao_social}>'
@@ -47,12 +49,10 @@ def inject_now():
 def home():
     return render_template('home.html')
 
-# NOVA ROTA: Listar e Pesquisar Clientes
 @app.route('/clientes')
 def pesquisar_clientes():
-    query = request.args.get('q', '') # Pega o termo de busca da URL, se houver
+    query = request.args.get('q', '')
     if query:
-        # Busca por nome, razao_social, cpf ou cnpj
         search_term = f"%{query}%"
         clientes = Cliente.query.filter(or_(
             Cliente.nome.ilike(search_term),
@@ -61,54 +61,63 @@ def pesquisar_clientes():
             Cliente.cnpj.ilike(search_term)
         )).all()
     else:
-        clientes = Cliente.query.all() # Se não houver busca, lista todos
+        clientes = Cliente.query.all()
         
     return render_template('pesquisar_clientes.html', clientes=clientes, query=query)
 
-# Rota para a página de cadastro (GET)
 @app.route('/clientes/novo')
 def cadastro_clientes():
     return render_template('cadastro_clientes.html')
 
-# Rota que recebe os dados do formulário (POST)
 @app.route('/clientes/novo', methods=['POST'])
 def cadastro_clientes_post():
     tipo = request.form.get('tipo')
 
+    # Pega os dados do formulário, tratando campos vazios como None
+    # Isso corrige o erro de UNIQUE constraint para campos opcionais
+    cpf = request.form.get('cpf') or None
+    cnpj = request.form.get('cnpj') or None
+    
+    # Validação para não aceitar dois clientes com o mesmo CPF/CNPJ não-nulo
+    if tipo == 'cpf' and cpf and Cliente.query.filter_by(cpf=cpf).first():
+        flash('Erro: Já existe um cliente com este CPF.', 'error')
+        return redirect(url_for('cadastro_clientes'))
+    if tipo == 'cnpj' and cnpj and Cliente.query.filter_by(cnpj=cnpj).first():
+        flash('Erro: Já existe um cliente com este CNPJ.', 'error')
+        return redirect(url_for('cadastro_clientes'))
+
     if tipo == 'cpf':
-        if request.form.get('cpf'):
-            if Cliente.query.filter_by(cpf=request.form.get('cpf')).first():
-                return "Erro: CPF já cadastrado!", 400
-        
         novo_cliente = Cliente(
             tipo='cpf',
             nome=request.form.get('nome'),
             telefone=request.form.get('telefone'),
-            cpf=request.form.get('cpf'),
+            como_conheceu=request.form.get('como_conheceu'),
+            como_conheceu_outros=request.form.get('como_conheceu_outros', ''),
+            cpf=cpf,
             email=request.form.get('email'),
             endereco_entrega_pf=request.form.get('endereco_entrega_pf')
         )
     elif tipo == 'cnpj':
-        if request.form.get('cnpj'):
-            if Cliente.query.filter_by(cnpj=request.form.get('cnpj')).first():
-                return "Erro: CNPJ já cadastrado!", 400
-                
         novo_cliente = Cliente(
             tipo='cnpj',
             razao_social=request.form.get('razao_social'),
             telefone=request.form.get('telefone'),
-            cnpj=request.form.get('cnpj'),
+            cnpj=cnpj,
+            como_conheceu=request.form.get('como_conheceu'),
+            como_conheceu_outros=request.form.get('como_conheceu_outros', ''),
             email_cnpj=request.form.get('email_cnpj'),
             endereco_empresa=request.form.get('endereco_empresa'),
             endereco_entrega_pj=request.form.get('endereco_entrega_pj')
         )
     else:
-        return "Erro: tipo de cadastro inválido", 400
+        flash("Erro: tipo de cadastro inválido", 'error')
+        return redirect(url_for('cadastro_clientes'))
 
     db.session.add(novo_cliente)
     db.session.commit()
-    # Redireciona para a lista de clientes com mensagem de sucesso (faremos no futuro)
-    return redirect(url_for('pesquisar_clientes'))
+    
+    flash('Cliente cadastrado com sucesso!', 'success')
+    return redirect(url_for('cadastro_clientes'))
 
 @app.route('/produtos')
 def cadastro_produtos():

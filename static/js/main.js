@@ -23,3 +23,16 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 });
+
+// Em static/js/main.js, adicione ao final:
+
+// 3. Controla o desaparecimento das mensagens flash
+document.addEventListener('DOMContentLoaded', function () {
+    const flashMessages = document.querySelectorAll('.flash-message');
+    setTimeout(function () {
+        flashMessages.forEach(function (message) {
+            message.style.display = 'none';
+        });
+    }, 4500); // Tempo um pouco maior que a animação de fade-out
+});
+

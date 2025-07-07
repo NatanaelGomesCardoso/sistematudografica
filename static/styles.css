@@ -94,7 +94,6 @@ body {
     transition: background-color 0.2s ease;
     cursor: pointer;
     overflow: hidden;
-    /* CORREÇÃO: Impede que conteúdo vaze */
 }
 
 .nav-link:hover,
@@ -110,10 +109,13 @@ body {
 
 .nav-link i,
 .module-header i {
-    font-size: 1.1rem;
-    width: 20px;
+    font-size: 1.2rem;
+    /* Aumentado para melhor visualização */
+    min-width: 24px;
+    /* Largura mínima para o ícone */
     text-align: center;
     flex-shrink: 0;
+    transition: all 0.3s ease;
 }
 
 .nav-text,
@@ -143,7 +145,7 @@ body {
     max-height: 200px;
 }
 
-/* ---- 4. Efeitos da Sidebar Recolhida (COM CORREÇÃO) ---- */
+/* ---- 4. Efeitos da Sidebar Recolhida (COM CORREÇÃO DE ALINHAMENTO) ---- */
 body.sidebar-collapsed .sidebar {
     width: 80px;
 }
@@ -157,21 +159,28 @@ body.sidebar-collapsed .module-header {
     justify-content: center;
     padding-left: 0;
     padding-right: 0;
+    gap: 0;
+    /* Remove o gap para centralizar o ícone */
+}
+
+body.sidebar-collapsed .nav-link i,
+body.sidebar-collapsed .module-header i {
+    margin: 0;
+    /* Remove margens que podem desalinhá-lo */
 }
 
 body.sidebar-collapsed .nav-text,
 body.sidebar-collapsed .sidebar-title,
 body.sidebar-collapsed .arrow {
-    opacity: 0;
-    pointer-events: none;
-    width: 0;
-    /* CORREÇÃO: Força o elemento a não ocupar espaço */
+    display: none;
+    /* Esconde completamente em vez de usar opacidade */
 }
 
 body.sidebar-collapsed .sub-menu {
     max-height: 0;
     padding: 0;
-    /* CORREÇÃO: Remove padding quando recolhido */
+    visibility: hidden;
+    /* Garante que não interfira no layout */
 }
 
 /* ---- 5. Estilos do Conteúdo Principal ---- */
@@ -215,7 +224,6 @@ body.sidebar-collapsed .sub-menu {
     color: #555;
 }
 
-/* Novo estilo para as notas (opcional) e *obrigatório */
 .label-note {
     font-size: 0.8rem;
     font-weight: 400;
@@ -305,10 +313,15 @@ body.sidebar-collapsed .sub-menu {
     display: flex;
     gap: 1rem;
     margin-bottom: 2rem;
+    align-items: center;
+}
+
+.search-container form {
+    flex-grow: 1;
 }
 
 .search-container input {
-    flex-grow: 1;
+    width: 100%;
 }
 
 .btn-pesquisar {
@@ -321,11 +334,12 @@ body.sidebar-collapsed .sub-menu {
 
 .btn-novo {
     background-color: var(--cor-destaque);
-    margin-left: auto;
     text-decoration: none;
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    white-space: nowrap;
+    /* Impede que o texto quebre */
 }
 
 .btn-novo:hover {
@@ -347,6 +361,7 @@ body.sidebar-collapsed .sub-menu {
     padding: 0.8rem 1rem;
     border-bottom: 1px solid var(--cor-borda);
     text-align: left;
+    white-space: nowrap;
 }
 
 .results-table th {
@@ -360,8 +375,56 @@ body.sidebar-collapsed .sub-menu {
     color: var(--cor-principal);
     margin-right: 1rem;
     font-size: 1.2rem;
+    text-decoration: none;
 }
 
 .action-buttons a:hover {
     color: var(--cor-destaque);
 }
+
+
+/* Em static/styles.css, adicione ao final: */
+
+/* ---- 8. ESTILOS DAS NOTIFICAÇÕES (FLASH MESSAGES) ---- */
+.flash-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    width: 350px;
+}
+
+.flash-message {
+    padding: 1rem 1.5rem;
+    margin-bottom: 1rem;
+    border-radius: var(--borda-raio);
+    color: #fff;
+    font-weight: 600;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    opacity: 0;
+    transform: translateX(100%);
+    animation: slideIn 0.5s forwards, fadeOut 0.5s 4s forwards;
+}
+
+.flash-success {
+    background-color: var(--cor-destaque);
+}
+
+.flash-error {
+    background-color: var(--cor-erro);
+}
+
+@keyframes slideIn {
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes fadeOut {
+    to {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+}
+
