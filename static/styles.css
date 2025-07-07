@@ -197,4 +197,171 @@ body.sidebar-collapsed .sub-menu {
 
 .container {
     background-color: #fff;
-    padding
+    padding: 2.5rem;
+    border-radius: var(--borda-raio);
+    box-shadow: var(--sombra-suave);
+}
+
+/* ---- 6. ESTILOS PROFISSIONAIS PARA FORMULÁRIOS ---- */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #555;
+}
+
+/* Novo estilo para as notas (opcional) e *obrigatório */
+.label-note {
+    font-size: 0.8rem;
+    font-weight: 400;
+    color: var(--cor-texto-sutil);
+    margin-left: 0.5rem;
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group select {
+    width: 100%;
+    max-width: 600px;
+    padding: 0.8rem 1rem;
+    border: 1px solid var(--cor-borda);
+    border-radius: var(--borda-raio);
+    font-size: 1rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: var(--cor-destaque);
+    box-shadow: 0 0 8px rgba(39, 194, 165, 0.3);
+}
+
+.radio-group {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.radio-group input[type="radio"] {
+    display: none;
+}
+
+.radio-group label {
+    padding: 0.7rem 1.5rem;
+    border: 1px solid var(--cor-borda);
+    border-radius: var(--borda-raio);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-weight: 500;
+    margin-bottom: 0;
+}
+
+.radio-group input[type="radio"]:checked+label {
+    background-color: var(--cor-destaque);
+    color: #fff;
+    border-color: var(--cor-destaque);
+    font-weight: 600;
+}
+
+.btn-salvar {
+    background-color: var(--cor-destaque);
+    color: #fff;
+    border: none;
+    padding: 0.9rem 2rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: var(--borda-raio);
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+.btn-salvar:hover {
+    background-color: #21a892;
+}
+
+.btn-salvar:active {
+    transform: scale(0.98);
+}
+
+.input-error {
+    border-color: var(--cor-erro) !important;
+}
+
+.error-message {
+    color: var(--cor-erro);
+    font-size: 0.85rem;
+    margin-top: 0.4rem;
+    height: 1.2em;
+}
+
+/* ---- 7. ESTILOS DA PÁGINA DE PESQUISA ---- */
+.search-container {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.search-container input {
+    flex-grow: 1;
+}
+
+.btn-pesquisar {
+    background-color: var(--cor-principal);
+}
+
+.btn-pesquisar:hover {
+    background-color: var(--cor-secundaria);
+}
+
+.btn-novo {
+    background-color: var(--cor-destaque);
+    margin-left: auto;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-novo:hover {
+    background-color: #21a892;
+}
+
+.table-wrapper {
+    overflow-x: auto;
+}
+
+.results-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+.results-table th,
+.results-table td {
+    padding: 0.8rem 1rem;
+    border-bottom: 1px solid var(--cor-borda);
+    text-align: left;
+}
+
+.results-table th {
+    background-color: #f9f9f9;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    color: var(--cor-texto-sutil);
+}
+
+.action-buttons a {
+    color: var(--cor-principal);
+    margin-right: 1rem;
+    font-size: 1.2rem;
+}
+
+.action-buttons a:hover {
+    color: var(--cor-destaque);
+}
