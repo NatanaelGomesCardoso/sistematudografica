@@ -31,6 +31,7 @@ body {
 .sidebar {
     width: 250px;
     height: 100vh;
+    /* Altura total da tela */
     background-color: var(--cor-principal);
     color: var(--cor-texto-claro);
     position: fixed;
@@ -38,7 +39,9 @@ body {
     left: 0;
     display: flex;
     flex-direction: column;
-    overflow-x: hidden;
+    /* Organiza os itens (header e nav) em coluna */
+    overflow: hidden;
+    /* Esconde qualquer overflow do container principal */
     transition: width 0.3s ease-in-out;
     z-index: 1000;
 }
@@ -50,13 +53,14 @@ body {
     padding: 1.5rem;
 }
 
-/* ---- 3. Estilos da Sidebar ---- */
+/* ---- 3. Estilos da Sidebar (COM CORREÇÃO DE SCROLL) ---- */
 .sidebar-header {
     display: flex;
     align-items: center;
     padding: 1.5rem 1.2rem;
     gap: 1rem;
     flex-shrink: 0;
+    /* Impede que o header encolha */
 }
 
 .sidebar-logo {
@@ -75,13 +79,18 @@ body {
     white-space: nowrap;
 }
 
+/* CORREÇÃO DEFINITIVA DO SCROLL */
 .sidebar-nav {
     flex-grow: 1;
+    /* Permite que esta área cresça para preencher o espaço */
     overflow-y: auto;
-    padding: 0 1rem;
+    /* A MÁGICA ACONTECE AQUI: Adiciona o scroll SÓ quando necessário */
+    padding: 0 1rem 1rem 1rem;
+    /* Adiciona um respiro na parte inferior */
 }
 
-.nav-link, .module-header {
+.nav-link,
+.module-header {
     display: flex;
     align-items: center;
     gap: 1rem;
@@ -90,12 +99,23 @@ body {
     text-decoration: none;
     border-radius: var(--borda-raio);
     margin-bottom: 0.5rem;
-    transition: background-color 0.2s ease;
+    transition: background-color 0.2s ease, color 0.2s ease, transform 0.1s ease;
     cursor: pointer;
-    overflow: hidden;
+    outline: none;
 }
 
-.nav-link:hover, .module-header:hover {
+.nav-link:active,
+.module-header:active {
+    transform: scale(0.97);
+}
+
+.nav-link:focus-visible,
+.module-header:focus-visible {
+    box-shadow: 0 0 0 3px var(--cor-secundaria);
+}
+
+.nav-link:hover,
+.module-header:hover {
     background-color: var(--cor-secundaria);
 }
 
@@ -105,7 +125,8 @@ body {
     font-weight: 600;
 }
 
-.nav-link i, .module-header i {
+.nav-link i,
+.module-header i {
     font-size: 1.2rem;
     min-width: 24px;
     text-align: center;
@@ -113,7 +134,8 @@ body {
     transition: all 0.3s ease;
 }
 
-.nav-text, .arrow {
+.nav-text,
+.arrow {
     white-space: nowrap;
     opacity: 1;
     transition: opacity 0.2s ease;
@@ -136,7 +158,8 @@ body {
 }
 
 .nav-module.active .sub-menu {
-    max-height: 200px;
+    max-height: 500px;
+    /* Aumentado para garantir espaço para todas as opções */
 }
 
 /* ---- 4. Efeitos da Sidebar Recolhida ---- */
@@ -148,7 +171,7 @@ body.sidebar-collapsed .main-content {
     margin-left: 80px;
 }
 
-body.sidebar-collapsed .nav-link, 
+body.sidebar-collapsed .nav-link,
 body.sidebar-collapsed .module-header {
     justify-content: center;
     padding-left: 0;
@@ -156,7 +179,7 @@ body.sidebar-collapsed .module-header {
     gap: 0;
 }
 
-body.sidebar-collapsed .nav-link i, 
+body.sidebar-collapsed .nav-link i,
 body.sidebar-collapsed .module-header i {
     margin: 0;
 }
@@ -245,9 +268,11 @@ body.sidebar-collapsed .sub-menu {
     gap: 1rem;
     align-items: center;
 }
+
 .radio-group input[type="radio"] {
     display: none;
 }
+
 .radio-group label {
     padding: 0.7rem 1.5rem;
     border: 1px solid var(--cor-borda);
@@ -257,7 +282,8 @@ body.sidebar-collapsed .sub-menu {
     font-weight: 500;
     margin-bottom: 0;
 }
-.radio-group input[type="radio"]:checked + label {
+
+.radio-group input[type="radio"]:checked+label {
     background-color: var(--cor-destaque);
     color: #fff;
     border-color: var(--cor-destaque);
@@ -279,6 +305,7 @@ body.sidebar-collapsed .sub-menu {
 .btn-salvar:hover {
     background-color: #21a892;
 }
+
 .btn-salvar:active {
     transform: scale(0.98);
 }
@@ -315,9 +342,11 @@ body.sidebar-collapsed .sub-menu {
 .btn-pesquisar {
     background-color: var(--cor-principal);
 }
+
 .btn-pesquisar:hover {
     background-color: var(--cor-secundaria);
 }
+
 .btn-novo {
     background-color: var(--cor-destaque);
     text-decoration: none;
@@ -326,6 +355,7 @@ body.sidebar-collapsed .sub-menu {
     gap: 0.5rem;
     white-space: nowrap;
 }
+
 .btn-novo:hover {
     background-color: #21a892;
 }
@@ -339,12 +369,15 @@ body.sidebar-collapsed .sub-menu {
     border-collapse: collapse;
     margin-top: 1rem;
 }
-.results-table th, .results-table td {
+
+.results-table th,
+.results-table td {
     padding: 0.8rem 1rem;
     border-bottom: 1px solid var(--cor-borda);
     text-align: left;
     vertical-align: middle;
 }
+
 .results-table th {
     background-color: #f9f9f9;
     font-size: 0.9rem;
@@ -356,6 +389,7 @@ body.sidebar-collapsed .sub-menu {
 .action-buttons {
     white-space: nowrap;
 }
+
 .action-buttons a {
     color: var(--cor-principal);
     margin-right: 1rem;
@@ -363,6 +397,7 @@ body.sidebar-collapsed .sub-menu {
     text-decoration: none;
     vertical-align: middle;
 }
+
 .action-buttons a:hover {
     color: var(--cor-destaque);
 }
@@ -376,6 +411,7 @@ body.sidebar-collapsed .sub-menu {
     padding: 0;
     vertical-align: middle;
 }
+
 .btn-delete:hover {
     color: var(--cor-erro);
 }
@@ -395,7 +431,7 @@ body.sidebar-collapsed .sub-menu {
     border-radius: var(--borda-raio);
     color: #fff;
     font-weight: 600;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     opacity: 0;
     transform: translateX(100%);
     animation: slideIn 0.5s forwards, fadeOut 0.5s 4s forwards;
