@@ -4,21 +4,21 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{% block title %}Tudo Gráfica{% endblock %}</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>{% block title %}Tudo Gráfica Online{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
 
-<body class="sidebar-collapsed">
+<body>
 
     <aside class="sidebar">
         <div class="sidebar-header">
-            <span class="sidebar-logo">TG</span>
-            <span class="sidebar-title">Tudo Gráfica</span>
+            <img src="{{ url_for('static', filename='img/logo.jpg') }}" alt="Logótipo da Tudo Gráfica Online" class="sidebar-logo-img">
+            <span class="sidebar-title">Tudo Gráfica Online</span>
         </div>
 
         <nav class="sidebar-nav">
-            <a href="{{ url_for('home') }}" class="nav-link">
+            <a href="{{ url_for('home') }}" class="nav-link active">
                 <i class="fa-solid fa-house"></i>
                 <span class="nav-text">Início</span>
             </a>
@@ -30,7 +30,7 @@
                     <i class="fa-solid fa-chevron-down arrow"></i>
                 </div>
                 <div class="sub-menu">
-                    <a href="{{ url_for('cadastro_clientes') }}" class="nav-link"><i
+                    <a href="{{ url_for('cadastrar_cliente') }}" class="nav-link"><i
                             class="fa-solid fa-user-plus"></i><span class="nav-text">Cadastrar</span></a>
                     <a href="{{ url_for('pesquisar_clientes') }}" class="nav-link"><i
                             class="fa-solid fa-search"></i><span class="nav-text">Pesquisar</span></a>
@@ -44,10 +44,10 @@
                     <i class="fa-solid fa-chevron-down arrow"></i>
                 </div>
                 <div class="sub-menu">
-                    <a href="{{ url_for('cadastro_produto') }}" class="nav-link"><i
-                            class="fa-solid fa-plus-circle"></i><span class="nav-text">Cadastrar</span></a>
-                    <a href="{{ url_for('consultar_produto') }}" class="nav-link"><i
-                            class="fa-solid fa-list-alt"></i><span class="nav-text">Consultar</span></a>
+                    <a href="{{ url_for('cadastrar_produto') }}" class="nav-link"><i
+                            class="fa-solid fa-plus-circle"></i><span class="nav-text">Cadastrar Produto</span></a>
+                    <a href="{{ url_for('listar_materias_primas') }}" class="nav-link"><i
+                            class="fa-solid fa-cogs"></i><span class="nav-text">Matérias-Primas</span></a>
                 </div>
             </div>
 
@@ -58,14 +58,22 @@
                     <i class="fa-solid fa-chevron-down arrow"></i>
                 </div>
                 <div class="sub-menu">
-                    <a href="{{ url_for('novo_orcamento') }}" class="nav-link"><i
-                            class="fa-solid fa-file-invoice"></i><span class="nav-text">Novo Orçamento</span></a>
-                    <a href="{{ url_for('nova_os') }}" class="nav-link"><i class="fa-solid fa-file-signature"></i><span
-                            class="nav-text">Nova O.S.</span></a>
-                    <a href="{{ url_for('consultar_orcamento') }}" class="nav-link"><i
-                            class="fa-solid fa-search-dollar"></i><span class="nav-text">Consultar Orçamentos</span></a>
-                    <a href="{{ url_for('consultar_os') }}" class="nav-link"><i class="fa-solid fa-tasks"></i><span
-                            class="nav-text">Consultar O.S.</span></a>
+                    <a href="{{ url_for('listar_orcamentos') }}" class="nav-link"><i
+                            class="fa-solid fa-file-invoice"></i><span class="nav-text">Orçamentos</span></a>
+                    <a href="{{ url_for('listar_os') }}" class="nav-link"><i
+                            class="fa-solid fa-file-signature"></i><span class="nav-text">Ordens de Serviço</span></a>
+                </div>
+            </div>
+
+            <div class="nav-module">
+                <div class="module-header">
+                    <i class="fa-solid fa-gears"></i>
+                    <span class="nav-text">Produção</span>
+                    <i class="fa-solid fa-chevron-down arrow"></i>
+                </div>
+                <div class="sub-menu">
+                    <a href="{{ url_for('painel_producao') }}" class="nav-link"><i class="fa-solid fa-tasks"></i><span
+                            class="nav-text">Painel (PCP)</span></a>
                 </div>
             </div>
 
@@ -79,8 +87,9 @@
     <div class="main-content">
         <header class="main-header">
             <button id="sidebar-toggle" class="btn-toggle"><i class="fa-solid fa-bars"></i></button>
-            <h2 class="page-title-text">{% block page_title %}{% endblock %}</h2>
+            <h2 class="page-title-text">{% block page_title %}Dashboard{% endblock %}</h2>
         </header>
+
         {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
         <div class="flash-container">
@@ -90,6 +99,7 @@
         </div>
         {% endif %}
         {% endwith %}
+
         <main class="container">
             {% block content %}{% endblock %}
         </main>

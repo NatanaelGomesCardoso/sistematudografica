@@ -1,8 +1,47 @@
 {% extends 'base.html' %}
 
-{% block title %}Início — Tudo Gráfica{% endblock %}
+{% block title %}Início - Tudo Gráfica Online{% endblock %}
+
+{% block page_title %}
+Página Inicial
+{% endblock %}
 
 {% block content %}
-<h1>Bem‑vindo à Tudo Gráfica!</h1>
-<p>Seu sistema está no ar.</p>
+<div class="dashboard-grid">
+    <div class="dashboard-card welcome-card">
+        <div class="welcome-text">
+            <h3>Bem-vindo de volta!</h3>
+            <p>Pronto para organizar o seu dia?</p>
+        </div>
+        <div class="welcome-icon">
+            <i class="fa-solid fa-sun"></i>
+        </div>
+    </div>
+
+    <div class="dashboard-card shortcuts-card">
+        <h4>Atalhos Rápidos</h4>
+        <a href="#" class="shortcut-link">
+            <i class="fa-solid fa-file-invoice"></i> Novo Orçamento
+        </a>
+        <a href="#" class="shortcut-link">
+            <i class="fa-solid fa-user-plus"></i> Novo Cliente
+        </a>
+        <a href="#" class="shortcut-link">
+            <i class="fa-solid fa-search"></i> Pesquisar O.S.
+        </a>
+    </div>
+
+    <div class="dashboard-card tasks-card">
+        <h4>Lembretes e Tarefas</h4>
+        <div class="task-item">
+            <p>Ligar para o fornecedor de lonas.</p>
+        </div>
+        <div class="task-item">
+            <p>Enviar o layout para o Cliente X aprovar.</p>
+        </div>
+        <div class="task-item empty">
+            <p>Nenhuma outra tarefa pendente.</p>
+        </div>
+    </div>
+</div>
 {% endblock %}
