@@ -13,22 +13,17 @@
 
     <aside class="sidebar">
         <div class="sidebar-header">
-            <img src="{{ url_for('static', filename='img/logo.jpg') }}" alt="Logótipo da Tudo Gráfica Online" class="sidebar-logo-img">
+            <img src="{{ url_for('static', filename='img/logo.jpg') }}" alt="Logótipo" class="sidebar-logo-img">
             <span class="sidebar-title">Tudo Gráfica Online</span>
         </div>
 
         <nav class="sidebar-nav">
-            <a href="{{ url_for('home') }}" class="nav-link active">
-                <i class="fa-solid fa-house"></i>
-                <span class="nav-text">Início</span>
-            </a>
+            <a href="{{ url_for('home') }}" class="nav-link"><i class="fa-solid fa-house"></i><span
+                    class="nav-text">Início</span></a>
 
             <div class="nav-module">
-                <div class="module-header">
-                    <i class="fa-solid fa-users"></i>
-                    <span class="nav-text">Clientes</span>
-                    <i class="fa-solid fa-chevron-down arrow"></i>
-                </div>
+                <div class="module-header"><i class="fa-solid fa-users"></i><span class="nav-text">Clientes</span><i
+                        class="fa-solid fa-chevron-down arrow"></i></div>
                 <div class="sub-menu">
                     <a href="{{ url_for('cadastrar_cliente') }}" class="nav-link"><i
                             class="fa-solid fa-user-plus"></i><span class="nav-text">Cadastrar</span></a>
@@ -38,25 +33,21 @@
             </div>
 
             <div class="nav-module">
-                <div class="module-header">
-                    <i class="fa-solid fa-box-open"></i>
-                    <span class="nav-text">Produtos</span>
-                    <i class="fa-solid fa-chevron-down arrow"></i>
-                </div>
+                <div class="module-header"><i class="fa-solid fa-box-open"></i><span class="nav-text">Produtos</span><i
+                        class="fa-solid fa-chevron-down arrow"></i></div>
                 <div class="sub-menu">
                     <a href="{{ url_for('cadastrar_produto') }}" class="nav-link"><i
                             class="fa-solid fa-plus-circle"></i><span class="nav-text">Cadastrar Produto</span></a>
-                    <a href="{{ url_for('listar_materias_primas') }}" class="nav-link"><i
-                            class="fa-solid fa-cogs"></i><span class="nav-text">Matérias-Primas</span></a>
+                    <a href="{{ url_for('consultar_produto') }}" class="nav-link"><i
+                            class="fa-solid fa-list-alt"></i><span class="nav-text">Consultar Produtos</span></a>
+                    <a href="{{ url_for('listar_fornecedores') }}" class="nav-link"><i
+                            class="fa-solid fa-truck"></i><span class="nav-text">Fornecedores</span></a>
                 </div>
             </div>
 
             <div class="nav-module">
-                <div class="module-header">
-                    <i class="fa-solid fa-dollar-sign"></i>
-                    <span class="nav-text">Vendas</span>
-                    <i class="fa-solid fa-chevron-down arrow"></i>
-                </div>
+                <div class="module-header"><i class="fa-solid fa-dollar-sign"></i><span class="nav-text">Vendas</span><i
+                        class="fa-solid fa-chevron-down arrow"></i></div>
                 <div class="sub-menu">
                     <a href="{{ url_for('listar_orcamentos') }}" class="nav-link"><i
                             class="fa-solid fa-file-invoice"></i><span class="nav-text">Orçamentos</span></a>
@@ -66,11 +57,8 @@
             </div>
 
             <div class="nav-module">
-                <div class="module-header">
-                    <i class="fa-solid fa-gears"></i>
-                    <span class="nav-text">Produção</span>
-                    <i class="fa-solid fa-chevron-down arrow"></i>
-                </div>
+                <div class="module-header"><i class="fa-solid fa-gears"></i><span class="nav-text">Produção</span><i
+                        class="fa-solid fa-chevron-down arrow"></i></div>
                 <div class="sub-menu">
                     <a href="{{ url_for('painel_producao') }}" class="nav-link"><i class="fa-solid fa-tasks"></i><span
                             class="nav-text">Painel (PCP)</span></a>
@@ -87,7 +75,7 @@
     <div class="main-content">
         <header class="main-header">
             <button id="sidebar-toggle" class="btn-toggle"><i class="fa-solid fa-bars"></i></button>
-            <h2 class="page-title-text">{% block page_title %}Dashboard{% endblock %}</h2>
+            <h2 class="page-title-text">{% block page_title %}{% endblock %}</h2>
         </header>
 
         {% with messages = get_flashed_messages(with_categories=true) %}
@@ -103,6 +91,17 @@
         <main class="container">
             {% block content %}{% endblock %}
         </main>
+    </div>
+
+    <div id="confirmModal" class="modal-overlay">
+        <div class="modal-content">
+            <h3 id="modalTitle"></h3>
+            <p id="modalMessage"></p>
+            <div class="modal-actions">
+                <button id="modalCancel" class="btn-cancelar">Cancelar</button>
+                <button id="modalConfirm" class="btn-confirmar">Confirmar</button>
+            </div>
+        </div>
     </div>
 
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>

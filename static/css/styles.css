@@ -1,5 +1,7 @@
 /* ==========================================================================
    1. CONFIGURAÇÕES GLOBAIS E VARIÁVEIS DE COR
+   - Aqui definimos a paleta de cores e as configurações base do projeto.
+   - Usar variáveis (--cor-principal) facilita a alteração do tema no futuro.
    ========================================================================== */
 :root {
     --cor-principal: #2a3f54;
@@ -49,13 +51,13 @@ body {
     width: 260px;
     height: 100vh;
     background-color: var(--cor-principal);
-    color: var(--cor-texto-claro);
     position: fixed;
     top: 0;
     left: 0;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
+    overflow: visible;
+    /* IMPORTANTE: Permite que o fly-out seja visível fora dos limites */
     transition: width 0.3s ease-in-out;
     z-index: 1000;
 }
@@ -68,7 +70,7 @@ body {
 }
 
 /* ==========================================================================
-   3. ESTILOS DA SIDEBAR
+   3. ESTILOS DA SIDEBAR (EXPANDIDA)
    ========================================================================== */
 .sidebar-header {
     display: flex;
@@ -82,15 +84,15 @@ body {
     height: 40px;
     width: 40px;
     border-radius: var(--borda-raio);
-    object-fit: contain;
-    background-color: #fff;
-    padding: 4px;
+    object-fit: cover;
 }
 
 .sidebar-title {
     font-size: 1.2rem;
     font-weight: 600;
     white-space: nowrap;
+    color: var(--cor-texto-claro);
+    /* Garante que o texto seja legível */
 }
 
 .sidebar-nav {
@@ -110,19 +112,9 @@ body {
     text-decoration: none;
     border-radius: var(--borda-raio);
     margin-bottom: 0.5rem;
-    transition: background-color 0.2s ease, color 0.2s ease, transform 0.1s ease;
+    transition: background-color 0.2s ease;
     cursor: pointer;
     outline: none;
-}
-
-.nav-link:active,
-.module-header:active {
-    transform: scale(0.97);
-}
-
-.nav-link:focus-visible,
-.module-header:focus-visible {
-    box-shadow: 0 0 0 3px var(--cor-secundaria);
 }
 
 .nav-link:hover,
@@ -130,7 +122,8 @@ body {
     background-color: var(--cor-secundaria);
 }
 
-.nav-link.active {
+.nav-link.active,
+.nav-module.active>.module-header {
     background-color: var(--cor-destaque);
     color: #fff;
     font-weight: 600;
@@ -142,14 +135,10 @@ body {
     min-width: 24px;
     text-align: center;
     flex-shrink: 0;
-    transition: all 0.3s ease;
 }
 
-.nav-text,
-.arrow {
+.nav-text {
     white-space: nowrap;
-    opacity: 1;
-    transition: opacity 0.2s ease;
 }
 
 .arrow {
@@ -157,7 +146,7 @@ body {
     transition: transform 0.3s ease;
 }
 
-.nav-module.active .arrow {
+.nav-module.active>.module-header .arrow {
     transform: rotate(180deg);
 }
 
@@ -168,11 +157,14 @@ body {
     padding-left: 1.5rem;
 }
 
-.nav-module.active .sub-menu {
+.nav-module.active>.sub-menu {
     max-height: 500px;
+    /* Altura suficiente para os itens */
 }
 
-/* Efeitos da Sidebar Recolhida */
+/* ==========================================================================
+   4. ESTILOS DA SIDEBAR (RECOLHIDA E FLY-OUT)
+   ========================================================================== */
 body.sidebar-collapsed .sidebar {
     width: 88px;
 }
@@ -184,19 +176,55 @@ body.sidebar-collapsed .main-content {
 body.sidebar-collapsed .nav-link,
 body.sidebar-collapsed .module-header {
     justify-content: center;
-    padding-left: 0;
-    padding-right: 0;
-    gap: 0;
 }
 
-body.sidebar-collapsed .nav-text,
 body.sidebar-collapsed .sidebar-title,
+body.sidebar-collapsed .nav-text,
 body.sidebar-collapsed .arrow {
     display: none;
 }
 
+/* Comportamento "Fly-out" definitivo */
+body.sidebar-collapsed .nav-module {
+    position: relative;
+    /* Contexto para o posicionamento do submenu */
+}
+
+body.sidebar-collapsed .sub-menu {
+    /* Posicionamento do menu flutuante */
+    position: absolute;
+    left: 100%;
+    top: 0;
+
+    /* Aparência */
+    background-color: var(--cor-secundaria);
+    padding: 0.5rem;
+    margin-left: 0.8rem;
+    border-radius: var(--borda-raio);
+    width: 220px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--cor-principal);
+    max-height: none;
+
+    /* Lógica da Animação (a parte que estava a falhar) */
+    visibility: hidden;
+    /* Começa invisível */
+    opacity: 0;
+    /* Começa transparente */
+    transform: scale(0.95) translateX(-10px);
+    /* Começa ligeiramente menor e para a esquerda */
+    transition: visibility 0.2s, opacity 0.2s, transform 0.2s;
+}
+
+/* Mostra o submenu quando o módulo tem a classe 'active' */
+body.sidebar-collapsed .nav-module.active>.sub-menu {
+    visibility: visible;
+    opacity: 1;
+    transform: scale(1) translateX(0);
+}
+
 /* ==========================================================================
-   4. ESTILOS DO CONTEÚDO PRINCIPAL
+   5. CONTEÚDO PRINCIPAL
    ========================================================================== */
 .main-header {
     display: flex;
@@ -227,7 +255,7 @@ body.sidebar-collapsed .arrow {
 }
 
 /* ==========================================================================
-   5. ESTILOS DO DASHBOARD (HOME.HTML)
+   6. DASHBOARD (HOME.HTML)
    ========================================================================== */
 .dashboard-grid {
     display: grid;
@@ -236,11 +264,11 @@ body.sidebar-collapsed .arrow {
 }
 
 .dashboard-card {
-    background-color: var(--cor-container);
     padding: 1.5rem;
     border-radius: var(--borda-raio);
-    box-shadow: var(--sombra-suave);
     border-left: 5px solid var(--cor-destaque);
+    background-color: var(--cor-container);
+    box-shadow: var(--sombra-suave);
 }
 
 .welcome-card {
@@ -309,7 +337,7 @@ body.sidebar-collapsed .arrow {
 }
 
 /* ==========================================================================
-   6. ESTILOS PARA FORMULÁRIOS
+   7. FORMULÁRIOS PROFISSIONAIS
    ========================================================================== */
 .form-group {
     margin-bottom: 1.5rem;
@@ -347,35 +375,6 @@ body.sidebar-collapsed .arrow {
     box-shadow: 0 0 8px rgba(42, 63, 84, 0.2);
 }
 
-/* Estilos para Radio Buttons */
-.radio-group {
-    display: flex;
-    gap: 1rem;
-    align-items: center;
-}
-
-.radio-group input[type="radio"] {
-    display: none;
-}
-
-.radio-group label {
-    padding: 0.7rem 1.5rem;
-    border: 1px solid var(--cor-borda);
-    border-radius: var(--borda-raio);
-    cursor: pointer;
-    transition: all 0.2s ease;
-    font-weight: 500;
-    margin-bottom: 0;
-}
-
-.radio-group input[type="radio"]:checked+label {
-    background-color: var(--cor-principal);
-    color: #fff;
-    border-color: var(--cor-principal);
-    font-weight: 600;
-}
-
-/* Botões */
 .btn-salvar {
     background-color: var(--cor-destaque);
     color: #fff;
@@ -392,11 +391,6 @@ body.sidebar-collapsed .arrow {
     background-color: #21a892;
 }
 
-.btn-salvar:active {
-    transform: scale(0.98);
-}
-
-/* Validação */
 .input-error {
     border-color: var(--cor-erro) !important;
 }
@@ -409,13 +403,207 @@ body.sidebar-collapsed .arrow {
 }
 
 /* ==========================================================================
-   7. NOTIFICAÇÕES (FLASH MESSAGES)
+   8. PÁGINA DE LISTAGEM (TABELAS)
+   ========================================================================== */
+.table-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.search-form {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.search-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 400px;
+}
+
+.search-wrapper i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--cor-texto-sutil);
+}
+
+.search-wrapper input {
+    padding-left: 40px !important;
+}
+
+.btn-pesquisar {
+    background-color: var(--cor-principal);
+}
+
+.btn-pesquisar:hover {
+    background-color: var(--cor-secundaria);
+}
+
+.btn-novo {
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    white-space: nowrap;
+}
+
+.table-wrapper {
+    overflow-x: auto;
+}
+
+.results-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+.results-table th,
+.results-table td {
+    padding: 1rem;
+    border-bottom: 1px solid var(--cor-borda);
+    text-align: left;
+    vertical-align: middle;
+}
+
+.results-table th {
+    background-color: #f9fafb;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    color: var(--cor-texto-sutil);
+    letter-spacing: 0.5px;
+}
+
+.actions-column {
+    width: 1%;
+    white-space: nowrap;
+    text-align: right !important;
+}
+
+.no-results {
+    text-align: center;
+    padding: 2rem;
+    color: var(--cor-texto-sutil);
+}
+
+.action-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+}
+
+.btn-action {
+    color: var(--cor-texto-sutil);
+    font-size: 1.1rem;
+    text-decoration: none;
+}
+
+.btn-action:hover {
+    color: var(--cor-principal);
+}
+
+.btn-delete {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+.btn-delete:hover {
+    color: var(--cor-erro);
+}
+
+/* ==========================================================================
+   9. MODAL DE CONFIRMAÇÃO
+   ========================================================================== */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.modal-overlay.active {
+    display: flex;
+    opacity: 1;
+}
+
+.modal-content {
+    background-color: var(--cor-container);
+    padding: 2.5rem;
+    border-radius: var(--borda-raio);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    width: 90%;
+    max-width: 450px;
+    text-align: center;
+    transform: scale(0.95);
+    transition: transform 0.3s ease;
+}
+
+.modal-overlay.active .modal-content {
+    transform: scale(1);
+}
+
+.modal-content h3 {
+    color: var(--cor-principal);
+    margin-bottom: 1rem;
+}
+
+.modal-content p {
+    color: var(--cor-texto-sutil);
+    margin-bottom: 2rem;
+    line-height: 1.6;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.modal-actions button {
+    border: none;
+    padding: 0.8rem 1.5rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border-radius: var(--borda-raio);
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.btn-cancelar {
+    background-color: #f1f1f1;
+    color: var(--cor-texto-sutil);
+}
+
+.btn-confirmar {
+    background-color: var(--cor-erro);
+    color: #fff;
+}
+
+/* ==========================================================================
+   10. NOTIFICAÇÕES (FLASH MESSAGES)
    ========================================================================== */
 .flash-container {
     position: fixed;
     top: 20px;
     right: 20px;
-    z-index: 2000;
+    z-index: 3000;
     width: 350px;
 }
 
@@ -428,7 +616,11 @@ body.sidebar-collapsed .arrow {
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     opacity: 0;
     transform: translateX(100%);
-    animation: slideIn 0.5s forwards, fadeOut 0.5s 4s forwards;
+    animation: slideIn 0.5s forwards;
+}
+
+.flash-message.fade-out {
+    animation: fadeOut 0.5s forwards;
 }
 
 .flash-success {
@@ -451,4 +643,25 @@ body.sidebar-collapsed .arrow {
         opacity: 0;
         transform: translateX(100%);
     }
+}
+
+/* ==========================================================================
+   11. ESTILOS DA PÁGINA "EM BREVE"
+   ========================================================================== */
+.coming-soon-container {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--cor-texto-sutil);
+}
+
+.coming-soon-container i {
+    font-size: 4rem;
+    color: var(--cor-borda);
+    margin-bottom: 2rem;
+}
+
+.coming-soon-container h2 {
+    font-size: 1.5rem;
+    color: var(--cor-principal);
+    margin-bottom: 0.5rem;
 }

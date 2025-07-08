@@ -1,11 +1,14 @@
 {% extends 'base.html' %}
 
+{# Define o título que aparecerá na aba do navegador para esta página específica #}
 {% block title %}Início - Tudo Gráfica Online{% endblock %}
 
+{# Define o título que aparecerá no cabeçalho principal da página #}
 {% block page_title %}
 Página Inicial
 {% endblock %}
 
+{# Define o conteúdo principal que será inserido no "corpo" do base.html #}
 {% block content %}
 <div class="dashboard-grid">
     <div class="dashboard-card welcome-card">
@@ -20,13 +23,13 @@ Página Inicial
 
     <div class="dashboard-card shortcuts-card">
         <h4>Atalhos Rápidos</h4>
-        <a href="#" class="shortcut-link">
+        <a href="{{ url_for('listar_orcamentos') }}" class="shortcut-link">
             <i class="fa-solid fa-file-invoice"></i> Novo Orçamento
         </a>
-        <a href="#" class="shortcut-link">
+        <a href="{{ url_for('cadastrar_cliente') }}" class="shortcut-link">
             <i class="fa-solid fa-user-plus"></i> Novo Cliente
         </a>
-        <a href="#" class="shortcut-link">
+        <a href="{{ url_for('listar_os') }}" class="shortcut-link">
             <i class="fa-solid fa-search"></i> Pesquisar O.S.
         </a>
     </div>

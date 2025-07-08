@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ modulo }} - Em Breve{% endblock %}
+
+{% block page_title %}
+{{ modulo }}
+{% endblock %}
+
+{% block content %}
+<div class="coming-soon-container">
+    <i class="fa-solid fa-person-digging"></i>
+    <h2>Página em Construção</h2>
+    <p>A funcionalidade de <strong>{{ modulo|lower }}</strong> está a ser preparada e estará disponível em breve.</p>
+</div>
+{% endblock %}

@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+
+{% block title %}Fornecedores - Tudo Gráfica Online{% endblock %}
+
+{% block page_title %}
+Gestão de Fornecedores
+{% endblock %}
+
+{% block content %}
+<div class="table-header">
+    <form method="get" action="{{ url_for('listar_fornecedores') }}" class="search-form">
+        <div class="search-wrapper">
+            <i class="fa-solid fa-search"></i>
+            <input type="search" name="q" placeholder="Pesquisar por nome do fornecedor..." value="{{ query or '' }}"
+                class="form-control">
+        </div>
+    </form>
+    <a href="{{ url_for('cadastrar_fornecedor') }}" class="btn-salvar btn-novo">
+        <i class="fa-solid fa-plus"></i> Novo Fornecedor
+    </a>
+</div>
+
+<div class="table-wrapper">
+    <table class="results-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nome do Fornecedor</th>
+                <th>Contato</th>
+                <th>Telefone</th>
+                <th>E-mail</th>
+                <th class="actions-column">Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for fornecedor in fornecedores %}
+            <tr>
+                <td>{{ fornecedor.id }}</td>
+                <td>{{ fornecedor.nome }}</td>
+                <td>{{ fornecedor.contato or '---' }}</td>
+                <td>{{ fornecedor.telefone or '---' }}</td>
+                <td>{{ fornecedor.email or '---' }}</td>
+                <td class="action-buttons">
+                    <a href="{{ url_for('editar_fornecedor', id=fornecedor.id) }}" title="Editar" class="btn-action">
+                        <i class="fa-solid fa-pencil"></i>
+                    </a>
+                    <form method="POST" action="{{ url_for('excluir_fornecedor', id=fornecedor.id) }}"
+                        class="delete-form">
+                        <button type="submit" class="btn-action btn-delete" title="Excluir">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="6" class="no-results">Nenhum fornecedor encontrado.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const modal = document.getElementById('confirmModal');
+        if (!modal) return; // Se o modal não existir na página, não faz nada
+
+        const modalTitle = document.getElementById('modalTitle');
+        const modalMessage = document.getElementById('modalMessage');
+        const modalConfirm = document.getElementById('modalConfirm');
+        const modalCancel = document.getElementById('modalCancel');
+        let formToSubmit = null;
+
+        document.querySelectorAll('.delete-form').forEach(form => {
+            form.addEventListener('submit', function (e) {
+                e.preventDefault(); // Impede o envio imediato do formulário
+                formToSubmit = this; // Guarda qual formulário foi clicado
+
+                modalTitle.textContent = 'Confirmar Exclusão';
+                modalMessage.textContent = 'Tem a certeza que deseja excluir este fornecedor? Esta ação não pode ser desfeita.';
+
+                // Mostra o modal com animação
+                modal.style.display = 'flex';
+                setTimeout(() => {
+                    modal.classList.add('active');
+                }, 10); // Pequeno delay para a transição do CSS funcionar
+            });
+        });
+
+        // Função para fechar o modal
+        function closeModal() {
+            modal.classList.remove('active');
+            setTimeout(() => {
+                modal.style.display = 'none';
+            }, 300); // Espera a animação de saída terminar (duração definida no CSS)
+            formToSubmit = null;
+        }
+
+        // O que acontece ao clicar no botão "Confirmar" do modal
+        modalConfirm.addEventListener('click', function () {
+            if (formToSubmit) {
+                formToSubmit.submit(); // Envia o formulário guardado
+            }
+        });
+
+        // Adiciona "ouvintes" para fechar o modal
+        modalCancel.addEventListener('click', closeModal);
+        modal.addEventListener('click', function (e) {
+            // Fecha o modal se o clique for no fundo escuro (o overlay)
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+    });
+</script>
+{% endblock %}
